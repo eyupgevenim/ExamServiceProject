@@ -1,0 +1,474 @@
+﻿@model LessonViewModel
+@{
+    ViewData["Title"] = "Elle Sınav";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Elle Sınav Kağıdı
+        <small>Oluşturma</small>
+    </h1>
+
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <i class="fa fa-edit"></i>
+                    <h3 class="box-title">@Model.Name</h3>
+                </div>
+
+                <div class="box-body">
+
+                    <!-- selected question summary -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Seçilmiş Soru Sayısı</th>
+                                        <th>Test Sayısı</th>
+                                        <th>Klasik Sayısı</th>
+                                        <th>Gösterme</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="totalCount">0</td>
+                                        <td id="testCount">0</td>
+                                        <td id="classicCount">0</td>
+                                        <td>
+                                            <button id="showSelectedQuestions" class="btn btn-primary" data-toggle="modal" 
+                                                    data-target="#modalSelectedQuestions" disabled>Göster</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- filter question control -->
+                    <div class="row">
+                        <div class="col-md-12 pl0">
+
+                            <input type="hidden" name="lessonGuid" id="lessonGuid" value="@Model.Guid" />
+
+                            <!-- multiplay autocomplete input -->
+                            <div class="col-md-5 ml0 m0 p0">
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label mr0"
+                                           style="padding-top:8px;" for="textinput">Konular:</label>
+                                    <div class="col-md-10 m0 p0">
+                                        <input type="text" id="subjectAutocomplete" class="form-control" placeholder="Konu adı" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Multiple Checkboxes -->
+                            <div class="col-md-4" id="checkboxFormatItemas">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label for="tender-0">
+                                                <input type="checkbox" name="eTest" id="eTest">
+                                                Test <span class="badge label label-info questions-coun">0</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 m0 p0">
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label for="tender-1">
+                                                <input type="checkbox" name="eClassic" id="eClassic">
+                                                Klassic <span class="badge label label-info questions-coun">0</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- question list -->
+                    <div class="row">
+                        <div class="col-md-12" id="questionsList">
+                            <div class="box-body pad table-responsive">
+                                <!-- body -->
+                            </div>
+                            <div class="box-footer">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination">
+                                        <!--footer-->
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- / .box-body-->
+            </div><!-- / .box box-primary -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</section><!-- /.content -->
+
+
+
+<!-- show selected questions Modal -->
+<div class="modal fade bs-example-modal-lg" id="modalSelectedQuestions" tabindex="-1" 
+     role="dialog" aria-labelledby="modalSelectedQuestions">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <link href="~/css/autocomplete-multiselect.css" rel="stylesheet" />
+    <script type="text/javascript">
+        
+        var exam = { questions: [], test: 0, classic: 0 },
+            selectedSubjectItems = {};
+        var subjectTags = JSON.parse('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Subjects))');
+
+        $(function () {
+
+            //when change question format checkbox
+            $("#checkboxFormatItemas input[type='checkbox']").change(function () {
+                GetQuestion();
+            });
+
+            //create pager
+            window.SetFooterPager = function (count, active) {
+
+                var pager_previous,
+                    pager_next,
+                    ul = $("#questionsList .box-footer .pagination");
+                ul.html("");
+
+                if (count < 2 || active > count) return;
+
+                pager_previous = $("<li />", { "id": "pager_previous", onclick: "GetQuestion(this.id);return false;" })
+                                    .html(
+                                        $("<a />", { "href": "#", "aria-label": "Previous" })
+                                        .append('<span aria-hidden="true">&laquo;</span>')
+                                    );
+
+
+                pager_next = $("<li />", { "id": "pager_next", onclick: "GetQuestion(this.id);return false;" })
+                                .html(
+                                    $("<a />", { "href": "#", "aria-label": "Next" })
+                                    .append('<span aria-hidden="true">&raquo;</span>')
+                                );
+
+                if (active == 1) pager_previous.addClass("hidden");
+                if (count == active) pager_next.addClass("hidden");
+
+                var li_items = '';
+                for (var i = 1; i <= count; i++) {
+                    li_items += (i == active) ? '<li id="pageNum_' + i + '" class="active" onclick="return false;"><a href="#">' + i + '</a></li>'
+                                              : '<li id="pageNum_' + i + '" onclick="GetQuestion(this.id);return false;"><a href="#">' + i + '</a></li>';
+                }
+
+                ul.append(pager_previous)
+                  .append(li_items)
+                  .append(pager_next);
+            }//window.SetFooterPager = function (count, active)
+
+            //set questions list
+            window.SetQuestionListBody = function (questions) {
+                var box_body = $("#questionsList .box-body");
+                box_body.html("");
+
+                $.each(questions, function (index, question) {
+
+                    var checkbox = $("<input />", {
+                        "type": "checkbox",
+                        "name": "selecte_checkbox_" + question.id,
+                        "id": "selecte_checkbox_" + question.id
+                    }).change(function () {
+                        var self = $(this);
+                        //var qId = self[0].id.split("_")[2];//question.id
+                        var format = $("#question_callout_" + question.id).attr("format");
+                        if (self.is(':checked')) {
+                            $("#question_callout_" + question.id).addClass("callout-success");
+                            exam.questions.push(question.id);
+                            (format == "Test") ? exam.test += 1 : exam.classic += 1;
+                        } else {
+                            $("#question_callout_" + question.id).removeClass("callout-success").addClass("callout-default");
+                            var index = exam.questions.indexOf(question.id);
+                            if (index > -1) exam.questions.splice(index, 1);
+                            (format == "Test") ? exam.test -= 1 : exam.classic -= 1;
+                        }
+
+                        $("#testCount").text(exam.test);
+                        $("#classicCount").text(exam.classic);
+                        $("#totalCount").text((exam.test + exam.classic));
+
+                        (exam.test > 0 || exam.classic > 0) ? $("#showSelectedQuestions").removeAttr("disabled")
+                                                            : $("#showSelectedQuestions").attr("disabled", "disabled");
+
+                        //console.log(exam.questions[exam.questions.indexOf("2024970f-8e75-4b4f-9d1f-c874f9140738")]);
+                        //console.log(exam.questions.indexOf("2024970f-8e75-4b4f-9d1f-c874f9140738"));
+                        //console.log(exam);
+                        //console.log($(this)[0].id);
+                    });
+
+                    (exam.questions.indexOf(question.id) == -1) ? null : checkbox.attr("checked", "checked");
+
+                    var callout = $("<div />", {
+                        "id": "question_callout_" + question.id,
+                        "class": (exam.questions.indexOf(question.id) == -1) ? "callout callout-default" : "callout callout-success",
+                        "format": question.examFormat,
+                        style: "border:5px solid #eee !important;"
+                    }).html($("<div />", {
+                        "class": "box-tools pull-right",
+                        "id": "selecte_checkbox_div_" + question.id
+                    }).html(checkbox));
+                    
+
+                    callout.append('<h4> <small>' + question.subject + ' | ' + question.examType + ' | ' + question.examFormat + ' </small> </h4>')
+                           .append('<h4><span id="editTitle_' + question.id + '"> ' + question.question + ' </span> </h4>');
+
+                    if (question.examFormat == "Test") {
+                        callout.append('<p style="margin-left:30px;"> A) ' + question.descriptionJ.a + '</p>')
+                                .append('<p style="margin-left:30px;"> B) ' + question.descriptionJ.b + ' </p>');
+
+                        if (question.descriptionJ.c != null) {
+                            callout.append('<p style="margin-left:30px;"> C) ' + question.descriptionJ.c + ' </p>');
+                        }
+                        if (question.descriptionJ.d != null) {
+                            callout.append('<p style="margin-left:30px;"> D) ' + question.descriptionJ.d + ' </p>');
+                        }
+                        if (question.descriptionJ.e != null) {
+                            callout.append('<p style="margin-left:30px;"> E) ' + question.descriptionJ.e + ' </p>');
+                        }
+                    } else if (question.examFormat == "Klasik") {
+                        if (question.description != null) {
+                            callout.append('<span style="margin-left:30px;">' + question.description + '</span>');
+                        }
+                    }
+                    callout.append('<h5><b>Cevap : ' + question.answer + '</b></h5>');
+
+                    box_body.append(callout);
+
+                });
+
+            }//window.SetQuestionListBody = function (questions)
+
+            //get questions as filter
+            window.GetQuestion = function (id) {
+                var active = 1;
+                if (id != undefined) {
+                    active = parseInt($("#questionsList .box-footer .pagination .active a")[0].text);
+                    if (id == "pager_previous") {
+                        active -= 1;
+                    } else if (id == "pager_next") {
+                        active += 1;
+                    } else {
+                        active = parseInt($("#" + id + " a")[0].text);
+                    }
+                }
+
+                var subjectIds = [];
+                $.each(selectedSubjectItems, function (i, v) { subjectIds.push(v.Id); });
+                var lessonGuid = $("#lessonGuid").val();
+
+                var $checked = $("#checkboxFormatItemas input[type='checkbox']:checked");
+                var format = [];
+                $.each($checked, function (index, value) {
+                    var id = value.id;
+                    if (id == "eTest") {
+                        format.push("Test");
+                    } else if (id == "eClassic") {
+                        format.push("Klasik");
+                    }
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetQuestionForManual","Exam")",
+                    dataType: "json",
+                    async: true,
+                    data: {
+                        lessonGuid: lessonGuid,
+                        format: JSON.stringify(format),
+                        subjectIds: JSON.stringify(subjectIds),
+                        active: active
+                    },
+                    success: function (response) {
+                        //console.log(response);
+                        SetQuestionListBody(response.questions);
+                        SetFooterPager(response.count, active); //active
+                    },
+                    error: function (er) { console.log(er); }
+                });
+
+            }//window.GetQuestion = function (id)
+
+            //get question format count
+            window.GetQuestionFormatCount = function () {
+                var test = 0, classic = 0;
+                if (Object.keys(selectedSubjectItems).length > 0) {
+                    $.each(selectedSubjectItems, function (i, v) { test += v.TestCount; classic += v.ClassicCount;});
+                } else {
+                    $.each(subjectTags, function (i, v) { test += v.TestCount; classic += v.ClassicCount;});
+                }
+                $("#eTest").next("span").text(test);
+                $("#eClassic").next("span").text(classic);
+
+                GetQuestion();
+            }//window.GetQuestionFormatCount = function ()
+            GetQuestionFormatCount();
+
+
+            //-------------autocomplete-----------
+            $.widget("ui.autocomplete", $.ui.autocomplete, {
+                options: $.extend({}, this.options, {
+                    multiselect: false
+                }),
+                _create: function () {
+                    this._super();
+
+                    var self = this, o = self.options;
+
+                    if (o.multiselect) {
+
+                        self.selectedItems = {};
+                        self.multiselect = $("<div></div>")
+                            .addClass("ui-autocomplete-multiselect ui-state-default ui-widget")
+                            .css("width", self.element.width())
+                            .insertBefore(self.element)
+                            .append(self.element)
+                            .bind("click.autocomplete", function () {
+                                self.element.focus();
+
+                                $("#subjectAutocomplete").autocomplete("search", '');
+
+                            });
+
+                        var fontSize = parseInt(self.element.css("fontSize"), 10);
+                        function autoSize(e) {
+                            // Hackish autosizing
+                            var $this = $(this);
+                            $this.width(160).width(this.scrollWidth + fontSize - 1);
+                        };
+
+                        var kc = $.ui.keyCode;
+                        self.element.bind({
+                            "keydown.autocomplete": function (e) {
+                                if ((this.value === "") && (e.keyCode == kc.BACKSPACE)) {
+                                    var prev = self.element.prev();
+                                    delete self.selectedItems[prev.text()];
+                                    prev.remove();
+                                }
+                            },
+                            // TODO: Implement outline of container
+                            "focus.autocomplete blur.autocomplete": function () {
+                                self.multiselect.toggleClass("ui-state-active");
+                            },
+                            "keypress.autocomplete change.autocomplete focus.autocomplete blur.autocomplete": autoSize
+                        }).trigger("change");
+
+                        self._renderItem = function (ul, item) {
+                            return $("<li>")
+                              .append(
+                                $("<div />")
+                                    .text(item.SubjactName)
+                                    .append(
+                                        $("<span />")
+                                            .addClass("badge label-info")
+                                            .text(item.QuestionCount)
+                                    )
+                               )
+                              .appendTo(ul);
+                        };
+
+                        // TODO: There's a better way?
+                        o.select = o.select || function (e, ui) {
+                            $("<div></div>")
+                                .addClass("ui-autocomplete-multiselect-item")
+                                .text(ui.item.SubjactName)
+                                .css("padding-bottom", "5px")
+                                .append(
+                                    $("<span></span>")
+                                        .addClass("badge label-info")
+                                        .text(ui.item.QuestionCount)
+                                 )
+                                .append(
+                                    $("<span></span>")
+                                        .addClass("ui-icon ui-icon-close")
+                                        .attr("id", JSON.stringify(ui.item))
+                                        //.attr("data-object", JSON.stringify(ui.item))
+                                        .click(function () {
+                                            var item = $(this).parent();
+                                            var raw_data = $(item, $("span")).context.id;
+                                            var json_data = $.parseJSON(raw_data);
+                                            subjectTags.push(json_data);
+
+                                            delete self.selectedItems[json_data.Id];
+                                            item.remove();
+
+                                            selectedSubjectItems = self.selectedItems;
+                                            GetQuestionFormatCount();
+                                        })
+                                )
+                                .insertBefore(self.element);
+
+                            self.selectedItems[ui.item.Id] = ui.item;
+                            self._value("");
+
+                            subjectTags = jQuery.grep(subjectTags, function (element) {
+                                return element.Id != ui.item.Id;
+                            });
+                            $('#subjectAutocomplete').autocomplete('option', 'source', subjectTags)
+
+                            selectedSubjectItems = self.selectedItems;
+                            GetQuestionFormatCount();
+
+                            return false;
+                        }
+                    }
+
+                    return this;
+                }
+            });
+
+            // set autocomplete input
+            $('#subjectAutocomplete').autocomplete({
+                source: function (request, response) {
+                    // delegate back to autocomplete, but extract the last term
+                    var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+                    response($.grep( subjectTags, function( value ) {
+                        value = value.SubjactName || value.value || value;
+                        return !request.term || matcher.test( value );
+                    }));
+                },//subjectTags,
+                multiselect: true,
+                minLength: 0
+            });
+
+            //-------------autocomplete-----------
+
+        });
+    </script>
+}

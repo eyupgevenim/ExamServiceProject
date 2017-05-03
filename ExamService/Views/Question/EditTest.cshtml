@@ -1,0 +1,207 @@
+﻿@model QuestionViewModel
+
+@{
+    ViewData["Title"] = "Soru Düzeltme";
+}
+
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Soru Düzeltme
+        <small>Test Soru</small>
+    </h1>
+</section>
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <i class="fa fa-edit"></i>
+                    <h3 class="box-title"> Düzelme Alanları </h3>
+                </div>
+                <div class="box-body">
+                    <!--edit test questions -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form asp-controller="Question" asp-action="Edit"
+                                  asp-route-id="@Model.Id" method="post" class="form-horizontal">
+
+                                <input asp-for="Id" type="hidden" />
+                                <input asp-for="qLessonGuid" type="hidden" />
+                                <input asp-for="qExamFormat" type="hidden" />
+                                <input asp-for="qExamType" type="hidden" />
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <label asp-for="Question" class="control-label"> </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <textarea asp-for="Question" class="form-control" rows="3"
+                                                          style="max-width:100% !important" autofocus></textarea>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span asp-validation-for="Question" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="edit-B-addon">  A  )</span>
+                                                    <input asp-for="DescriptionJ.A" class="form-control" aria-describedby="edit-A-addon" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span asp-validation-for="DescriptionJ.A" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="edit-B-addon">  B  )</span>
+                                                    <input asp-for="DescriptionJ.B" class="form-control" aria-describedby="edit-B-addon" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span asp-validation-for="DescriptionJ.B" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (Model.DescriptionJ.C != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon" id="edit-C-addon">  C  )</span>
+                                                        <input asp-for="DescriptionJ.C" class="form-control" aria-describedby="edit-C-addon" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <span asp-validation-for="DescriptionJ.C" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (Model.DescriptionJ.D != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon" id="edit-D-addon">  D  )</span>
+                                                        <input asp-for="DescriptionJ.D" class="form-control" aria-describedby="edit-D-addon" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <span asp-validation-for="DescriptionJ.D" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (Model.DescriptionJ.E != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon" id="edit-E-addon">  E  )</span>
+                                                        <input asp-for="DescriptionJ.E" class="form-control" aria-describedby="edit-E-addon" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <span asp-validation-for="DescriptionJ.E" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label asp-for="Answer" class="control-label pull-left" style="margin-left:20px;"></label>
+                                                    <div class="col-md-2">
+                                                        <select asp-for="Answer" class="form-control">
+                                                            <option value="A" aria-selected="@if (Model.Answer == "A") { @("true"); } else {@("false"); } ">A</option>
+                                                            <option value="B" aria-selected="@if (Model.Answer == "B") { @("true"); } else {@("false"); } ">B</option>
+                                                            @if (Model.DescriptionJ.C != null)
+                                                            {
+                                                                <option value="C" aria-selected="@if (Model.Answer == "C") { @("true"); } else {@("false"); } ">C</option>
+                                                            }
+                                                            @if (Model.DescriptionJ.D != null)
+                                                            {
+                                                                <option value="D" aria-selected="@if (Model.Answer == "D") { @("true"); } else {@("false"); } ">D</option>
+                                                            }
+                                                            @if (Model.DescriptionJ.E != null)
+                                                            {
+                                                                <option value="E" aria-selected="@if (Model.Answer == "E") { @("true"); } else {@("false"); } ">E</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-8">
+                                                <button type="submit" class="btn btn-primary pull-right">Kaydet</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div><!-- /.col -->
+    </div><!-- ./row -->
+</section><!-- /.content -->
+
+
+
+@section scripts{
+
+    <script type="text/javascript">
+        // jQuery initialize function
+        $(function () {
+
+        });//$(function ())
+    </script>
+
+@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+

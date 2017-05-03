@@ -1,0 +1,494 @@
+﻿@model IEnumerable<Lesson>
+@{
+    ViewData["Title"] = "Sınav Kipi";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Sınav Kipi
+        <small>Oluşturma</small>
+    </h1>
+
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+
+                    <i class="fa fa-edit"></i>
+                    <h3 class="box-title">Sınav Kipi</h3>
+                    <span class="pull-right">
+                        <button id="createExamManual" class="btn btn-primary" onclick="window.location.href = '';">
+                            <i class="fa fa-list"></i> Elle Sınav Oluştur
+                        </button>
+                    </span>
+                </div>
+
+                <div class="box-body">
+                    <!-- create exam form -->
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="col-md-6">
+                                <form asp-controller="Exam" asp-action="Create" onsubmit="submitForm();"
+                                      method="post" class="form-horizontal" id="eForm">
+
+                                    <fieldset>
+                                        <!-- Select Basic -->
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="selectbasicTypeTour">Ders Seçiniz</label>
+                                            <div class="col-md-8">
+                                                <select id="eLessonGuid" name="eLessonGuid" class="form-control">
+                                                    @foreach (var item in Model)
+                                                    {
+                                                        <option value="@item.Guid">@item.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Multiple Checkboxes -->
+                                        <div class="form-group" id="checkboxItems">
+                                            <label class="col-md-4 control-label" for="tender">Sınav Türü</label>
+                                            <div class="col-md-4">
+                                                <div class="checkbox">
+                                                    <label for="tender-0">
+                                                        <input type="checkbox" name="eVisa" id="eVisa" disabled>
+                                                        Vize <span class="badge label label-info questions-coun">0</span>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label for="tender-1">
+                                                        <input type="checkbox" name="eFinal" id="eFinal" disabled>
+                                                        Final <span class="badge label label-info questions-coun">0</span>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label for="tender-2">
+                                                        <input type="checkbox" name="eCompletion" id="eCompletion" disabled>
+                                                        Bütünlenme <span class="badge label label-info questions-coun">0</span>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label for="tender-3">
+                                                        <input type="checkbox" name="eExcuse" id="eExcuse" disabled>
+                                                        Mazeret <span class="badge label label-info questions-coun">0</span>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label for="tender-3">
+                                                        <input type="checkbox" name="eSingleLesson" id="eSingleLesson" disabled>
+                                                        Tek Ders <span class="badge label label-info questions-coun">0</span>
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                        <!-- Number input-->
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="textinput">Test Soru Sayısı</label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <input type="number" id="eTest" name="eTest" min="0" value="0" placeholder="Soru Adedi" class="form-control" disabled>
+                                                    <span class="input-group-addon label-warning questions-coun">Max(0)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Number input-->
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="textinput">Klasik Soru Sayısı</label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <input type="number" id="eClassic" name="eClassic" min="0" value="0" placeholder="Soru Adedi" class="form-control" disabled>
+                                                    <span class="input-group-addon label-warning questions-coun">Max(0)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Selected Basic -->
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label" for="selectbasicTypeTour">Grup</label>
+                                            <div class="col-md-4">
+                                                <select id="eGroup" name="eGroup" class="form-control">
+                                                    <option value="GroupNo" selected>Grup Yok</option>
+                                                    <option value="Group2">2 Grup</option>
+                                                    <option value="Group3">3 Grup</option>
+                                                    <option value="Group4">4 Grup</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <select id="eGroupFormat" name="eGroupFormat" class="form-control" disabled>
+                                                    <option value="FormatNo" selected>---</option>
+                                                    <option value="FormatSame">Aynı</option>
+                                                    <option value="FormatMixed">Karışık</option>
+                                                    <option value="FormatDiffernt">Farklı</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Button (Double) -->
+                                        <div class="modal-footer">
+                                            <div class="row">
+                                                <div class="col-md-8 col-md-offset-4 mr0 pr0">
+                                                    <button type="submit" id="getExamQuestions" class="btn btn-primary pull-right col-md-4" style="margin-left:10px">Getir</button>
+                                                    <a asp-controller="Question" asp-action="Index" class="btn btn-danger pull-right col-md-4"> İptal</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label mr0 pr0" style="padding-top:8px;text-align:right;" for="textinput">Konular: </label>
+                                    <div class="col-md-10">
+                                        <input type="text" id="subjectAutocomplete" class="form-control" placeholder="Konu adı" />
+                                    </div>
+                                </div>
+
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</section><!-- /.content -->
+
+
+@section scripts{
+    <link href="~/css/autocomplete-multiselect.css" rel="stylesheet" />
+    <script src="~/js/jquery.autocomplete.multiselect.js"></script>
+    <script type="text/javascript">
+
+        var subjectTags = [];
+        var selectedSubjectItems = {};
+        var summaryQuestion = {
+            type : {
+                "vize": 0,
+                "final": 0,
+                "completion": 0,
+                "excuse": 0,
+                "singleLesson": 0
+            },
+            format : {
+                "test": 0,
+                "classic": 0
+            }
+        };
+
+        // jQuery initialize function
+        $(function () {
+
+            //when change exam type checkbox
+            $("#checkboxItems input[type='checkbox']").change(function () {
+                var count = $("#checkboxItems input[type='checkbox']:checked").length;
+                if (count == 0) $(this).prop("checked", true);
+
+                GetQuestionsTypeCount();
+            });
+
+            // set subject Ids json stringify format
+            window.GetSubjectIdsJSON = function () {
+                var subjectIds = [];
+                $.each(selectedSubjectItems, function (key, item) {
+                    subjectIds.push(item.value);
+                });
+
+                return JSON.stringify(subjectIds);
+            }//window.GetSubjectIdsJSON 
+
+            //get question count
+            window.GetQuestionsTypeCount = function () {
+                var lessonGuid = $("#eLessonGuid").val();
+                var subjectIds = GetSubjectIdsJSON();
+
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetQuestionsTypeCount", "Exam")",
+                    dataType: "json",
+                    async: true,
+                    data: {
+                        guid: lessonGuid,
+                        subjectIds: subjectIds
+                    },
+                    success: function (response) {
+                        //console.log(response);
+
+                        $("#eForm input, #getExamQuestions").attr("disabled", "disabled");
+                        $("#eTest, #eClassic").val(0).attr("disabled", "disabled");
+                        $(".questions-coun").text(0);
+
+                        $.each(response.examType, function (index, value) {
+
+                            if (value.examType == "Vize") {
+                                summaryQuestion.type.vize = value.count;
+                                $("#eVisa").removeAttr("disabled")
+                                           .next("span").text(value.count);
+                            } else if (value.examType == "Final") {
+                                summaryQuestion.type.final = value.count;
+                                $("#eFinal").removeAttr("disabled")
+                                            .next("span").text(value.count);
+                            } else if (value.examType == "Bütünleme") {
+                                summaryQuestion.type.completion = value.count;
+                                $("#eCompletion").removeAttr("disabled")
+                                                 .next("span").text(value.count);
+                            } else if (value.examType == "Mazeret") {
+                                summaryQuestion.type.excuse = value.count;
+                                $("#eExcuse").removeAttr("disabled")
+                                             .next("span").text(value.count);
+                            } else if (value.examType == "Tek Ders") {
+                                summaryQuestion.type.singleLesson = value.count;
+                                $("#eSingleLesson").removeAttr("disabled")
+                                                   .next("span").text(value.count);
+                            }
+                        });
+
+                        GetQuestionsFomatCount();
+                    },
+                    error: function (er) { console.log(er); }
+                });
+            }//window.GetQuestionsTypeCount = function ()
+            GetQuestionsTypeCount();
+
+            // get question count as format
+            window.GetQuestionsFomatCount = function () {
+                var $checked = $("#checkboxItems input[type='checkbox']:checked");
+                var types = [];
+                $.each($checked, function (index, value) {
+                    var id = value.id;
+                    if (id == "eVisa") {
+                        types.push("Vize");
+                    } else if (id == "eFinal") {
+                        types.push("Final");
+                    } else if (id == "eCompletion") {
+                        types.push("Bütünleme");
+                    } else if (id == "eExcuse") {
+                        types.push("Mazeret");
+                    } else if (id == "eSingleLesson") {
+                        types.push("Tek Ders");
+                    }
+                });
+                var subjectIds = GetSubjectIdsJSON();
+
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetQuestionsFomatCount", "Exam")",
+                    dataType: "json",
+                    async: true,
+                    data: {
+                        guid: $("#eLessonGuid").val(),
+                        types: JSON.stringify(types),
+                        subjectIds: subjectIds
+                    },
+                    success: function (response) {
+                        //console.log(response);
+                        summaryQuestion.format.test = response.test;
+                        summaryQuestion.format.classic = response.classic;
+
+                        if (response.test > 0) {
+                            $("#eTest").removeAttr("disabled")
+                                       .attr("max", response.test)
+                                       .next("span").text("Max(" + response.test + ")");
+                            $("#getExamQuestions").removeAttr("disabled");
+                        }
+
+                        if (response.classic > 0) {
+                            $("#eClassic").removeAttr("disabled")
+                                          .attr("max", response.classic)
+                                          .next("span").text("Max(" + response.classic + ")");
+                            $("#getExamQuestions").removeAttr("disabled");
+                        }
+
+                        //+++++
+                        GetGroupOption();
+                    },
+                    error: function (er) { console.log(er); }
+                });
+
+            }//window.GetQuestionsFomatCount = function ()
+            //GetQuestionsFomatCount();
+
+            // when changed lesson select option
+            $(document.body).on("change", "#eLessonGuid", function () {
+                //$("#checkboxItems input[type='checkbox']").removeAttr("checked");//------------
+                GetQuestionsTypeCount(this.value);
+                GetSubjects(this.value);
+            });
+
+            // when changed test and classic questions count
+            $(document.body).on("change", "#eTest, #eClassic", function () {
+                //var eGroup = $("#eGroup").val();
+                GetGroupOption();
+            });
+
+            // set #eGroupFormat css display block or none
+            window.GetGroupFormatOption = function (count) {
+
+                var testT = parseInt($("#eTest").val()),
+                    classicT = parseInt($("#eClassic").val()),
+                    total = 0;
+
+                var testTMax, classicTMax, totalMax = 0;
+
+                (testT == 0) ? testTMax = 0 : testTMax = summaryQuestion.format.test;
+                (classicT == 0) ? classicTMax = 0 : classicTMax = summaryQuestion.format.classic;
+
+                total = testT + classicT;
+                totalMax = testTMax + classicTMax;
+
+                //var total = parseInt($("#eTest").val()) + parseInt($("#eClassic").val());
+                //var totalMax = summaryQuestion.format.test + summaryQuestion.format.classic;
+                var opArr = [];
+
+                if (totalMax > total) {
+
+                    var dif = (testTMax >= (count * testT)) ? true : false;
+                    dif &= (classicTMax >= (count * classicT)) ? true : false;
+                    opArr = (dif) ? [1, 1, 1] : [1, 1, 0];
+                    //opArr = (totalMax >= (count * total)) ? [1, 1, 1] : [1, 1, 0];
+                } else {
+                    opArr = [1, 0, 0];
+                }
+
+                (opArr[0] == 1) ? $("#eGroupFormat option[value=FormatSame]").css("display", "block")
+                                : $("#eGroupFormat option[value=FormatSame]").css("display", "none");
+                (opArr[1] == 1) ? $("#eGroupFormat option[value=FormatMixed]").css("display", "block")
+                                : $("#eGroupFormat option[value=FormatMixed]").css("display", "none");
+                (opArr[2] == 1) ? $("#eGroupFormat option[value=FormatDiffernt]").css("display", "block")
+                                : $("#eGroupFormat option[value=FormatDiffernt]").css("display", "none");
+            }//window.GetGroupFormatOption = function (count)
+
+            //get group option
+            window.GetGroupOption = function () {
+                var test = parseInt($("#eTest").val()),
+                    classic = parseInt($("#eClassic").val());
+
+                if (test == 0 && classic == 0) {
+                    $("#eGroup").val("GroupNo");
+                    $("#getExamQuestions").attr("disabled", "disabled");;
+                }
+                else {
+                    $("#getExamQuestions").removeAttr("disabled");
+                }
+
+                var eGroup = $("#eGroup").val();
+
+                if (eGroup == "GroupNo") {
+                    $("#eGroupFormat option[value=FormatNo]").css("display", "block");
+                    $("#eGroupFormat")
+                        .val("FormatNo")
+                        .attr("disabled", "disabled");
+                } else {
+                    $("#eGroupFormat option[value=FormatNo]").css("display", "none");
+                    $("#eGroupFormat")
+                        .val("FormatSame")
+                        .removeAttr("disabled");
+
+                    if (eGroup == "Group2") {
+                        GetGroupFormatOption(2);
+                    } else if (eGroup == "Group3") {
+                        GetGroupFormatOption(3)
+                    } else if (eGroup == "Group4") {
+                        GetGroupFormatOption(4);
+                    }
+
+                }
+            }//window.GetGroupOption = function ()
+
+            //when changed group
+            $(document.body).on("change", "#eGroup", function () {
+                //var eGroup = this.value;
+                GetGroupOption();
+            });
+
+            // get lesson subjects
+            window.GetSubjects = function (lessonGuid) {
+                if (lessonGuid == "undefined") { lessonGuid = $("#eLessonGuid").val(); }
+
+                $("#createExamManual").attr("onclick",
+                    "window.location.href = '" + $("#eForm").attr("action") + "/Manual/" + lessonGuid + "'");
+
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetSubjects","Exam")",
+                    dataType: "json",
+                    async: true,
+                    data: { guid: lessonGuid },
+                    success: function (response) {
+                        //console.log(response.subjects);
+
+                        subjectTags = response.subjects;
+                        selectedSubjectItems = {};
+                        $('#subjectAutocomplete').data()["ui-autocomplete"].selectedItems = {};
+                        $(".ui-autocomplete-multiselect-item").remove();
+                        $('#subjectAutocomplete').autocomplete("option", { source: subjectTags });
+
+                        $("#checkboxItems input[type='checkbox']").removeAttr("checked");//+++++++++++
+
+                        var questionCount = 0;
+                        $.each(response.subjects, function (index, value) {
+                            questionCount += value.count;
+                        });
+                        (questionCount > 0) ? $("#createExamManual").removeAttr("disabled")
+                                            : $("#createExamManual").attr("disabled", "disabled");
+                    },
+                    error: function (er) { console.log(er); }
+                });
+            }//window.getSubjects = function (lessonGuid) 
+            GetSubjects('@Model.FirstOrDefault().Guid');
+
+            // set autocomplete input
+            $('#subjectAutocomplete').autocomplete({
+                source: subjectTags,
+                multiselect: true,
+                minLength: 0
+            });
+
+            //when submit form set $("#eSubjectItems")
+            window.submitForm = function () {
+                var subjectIds = GetSubjectIdsJSON();
+
+                $('<input />').attr('type', 'hidden')
+                    .attr("id", "eSubjectItems")
+                    .attr('name', "eSubjectItems")
+                    .attr('value', subjectIds)
+                    .appendTo('#eForm');
+                return true;
+            }//window.submitForm = function ()
+
+
+            /*
+            window.SetFormAction = function (act) {
+                var fAction = $("#eForm").attr("action");
+                var fArr = fAction.split("/");
+                var nAction = "";
+                for (var i = 1; i < fArr.length; i++) {
+                    if ((fArr.length - 1) == i) {
+                        nAction += "/" + act;
+                    } else {
+                        nAction += "/" + fArr[i];
+                    }
+                }
+                $("#eForm").attr("action", nAction);
+                //console.log(nAction)
+                //console.log($(fArr).last()[0]);
+            }//window.SetFormAction = function (act)
+            */
+
+        });//$(function ())
+    </script>
+    @*@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }*@
+}
+

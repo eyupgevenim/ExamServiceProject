@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+    <title>@ViewData["Title"] - Exam Service</title>
+
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/lib/jquery-ui/themes/ui-lightness/jquery-ui.min.css" />
+        <link rel="stylesheet" href="~/lib/admin-lte/dist/css/AdminLTE.min.css" />
+        <link rel="stylesheet" href="~/lib/admin-lte/dist/css/skins/_all-skins.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+              asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"
+              asp-fallback-href="~/lib/jquery-ui/themes/ui-lightness/jquery-ui.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+
+        <link rel="stylesheet" href="~/lib/admin-lte/dist/css/AdminLTE.min.css" />
+        <link rel="stylesheet" href="~/lib/admin-lte/dist/css/skins/_all-skins.min.css" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+    @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
+</head>
+
+@{
+    var theme = "sidebar-mini fixed skin-blue";
+    if (ViewContext.RouteData.Values["Controller"].ToString() == "TeacherOther")
+    {
+        theme = "sidebar-mini fixed skin-blue-light";
+    }
+}
+<!-- sidebar-mini fixed skin-blue || sidebar-mini fixed skin-blue-light-->
+<body class="@theme">
+    <div class="wrapper">
+
+        @await Html.PartialAsync("Layouts/Partials/ExamService/_Header")
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper" style="padding-top:0px;">
+            @RenderBody()
+        </div><!-- /.content-wrapper -->
+
+        @await Html.PartialAsync("Layouts/Partials/ExamService/_Footer")
+    </div>
+
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+        <script src="~/lib/jquery-ui/ui/i18n/datepicker-tr.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/lib/admin-lte/dist/js/app.min.js"></script>
+        <script src="~/lib/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+
+        @*<script src="~/lib/admin-lte/dist/js/demo.js"></script>*@
+
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
+                asp-fallback-src="~/lib/jquery-ui/jquery-ui.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.scrollbar/0.2.11/jquery.scrollbar.min.js"
+                asp-fallback-src="~/lib/jquery-slimscroll/jquery.slimscroll.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/i18n/jquery-ui-i18n.min.js"
+                asp-fallback-src="~/lib/jquery-ui/ui/i18n/datepicker-tr.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+
+        <script src="~/lib/admin-lte/dist/js/app.min.js"></script>
+
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+
+        @*<script src="~/lib/admin-lte/dist/js/demo.js"></script>*@
+
+    </environment>
+
+    <script type="text/javascript">
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

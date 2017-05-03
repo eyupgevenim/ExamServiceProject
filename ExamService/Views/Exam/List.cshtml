@@ -1,0 +1,264 @@
+﻿@model IEnumerable<ExamSummaryViewModel>
+@{
+    ViewData["Title"] = "Geçmiş Sınavlar";
+}
+
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Sınav Kağıtları
+        <small>Geçmiş</small>
+    </h1>
+
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <i class="fa fa-list"></i>
+                    <h3 class="box-title">Geçmiş Sınav Kağıtları</h3>
+                </div>
+
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Dersin Adı</th>
+                                        <th>Kayıt İsmi</th>
+                                        <th>Tarih</th>
+                                        <th>Grup | Format</th>
+                                        <th>Soru Sayısı</th>
+                                        <th>Gösterme</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.LessonName</td>
+                                            <td>@item.Name</td>
+                                            <td>@item.CreatedDateTime</td>
+                                            <td>
+                                                @if (item.Exam.Group == "GroupNo")
+                                                { @("Grup Yok") }
+                                                else if (item.Exam.Group == "Group2")
+                                                { @("2 Grup") }
+                                                else if (item.Exam.Group == "Group3")
+                                                { @("3 Grup") }
+                                                else if (item.Exam.Group == "Group4")
+                                                { @("4 Grup") }
+                                                @if (item.Exam.GroupFormat == "FormatSame")
+                                                { @(" | Aynı") }
+                                                else if (item.Exam.GroupFormat == "FormatMixed")
+                                                { @(" | Karışık") }
+                                                else if (item.Exam.GroupFormat == "FormatDiffernt")
+                                                { @(" | Farklı") }
+                                            </td>
+                                            <td>
+                                                Test: @item.Exam.QuestionGroups.FirstOrDefault().TestGroups.Count() |
+                                                Klasik: @item.Exam.QuestionGroups.FirstOrDefault().ClassicGroups.Count()
+                                            </td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-default dropdown-toggle" type="button"
+                                                            id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                        Göster
+                                                        <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="min-width:102px;">
+                                                        @{ int g = 0;}
+                                                        @foreach (var group in item.Exam.QuestionGroups)
+                                                        {
+                                                            g++;
+                                                            <li>
+                                                                <button id="@item.Id&#95;@(g-1)" class="btn btn-primary btn-sm sm small"
+                                                                        data-toggle="modal" data-target=".bs-example-modal-lg" onclick="getExamGroup(this.id);">
+                                                                    @g. Grubu Göster
+                                                                </button>
+                                                            </li>
+                                                        }
+
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                                            }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.col -->
+    </div><!-- ./row -->
+</section><!-- /.content -->
+
+
+
+<!-- exam view editor modal -->
+<div id="examViewEditorModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button class="btn btn-primary pull-right" id="btnPrintExamControllBtnRow" onclick="print();" style="margin-right:20px;">
+                    Yazdır <i class="fa fa-print"></i>
+                </button>
+                <h4 class="modal-title" id="examViewEditorModalTitle">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <textarea cols="80" id="editor" name="editor" rows="10"></textarea>
+                <div class="row">
+                    <div class="col-md-12" id="col-answer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+
+    <environment names="Development">
+        <script src="~/lib/ckeditor/ckeditor.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="//cdn.ckeditor.com/4.6.1/full/ckeditor.js"
+                asp-fallback-src="~/lib/ckeditor/ckeditor.js"
+                asp-fallback-test="window.CKeditor">
+        </script>
+    </environment>
+
+    <script type="text/javascript">
+
+        // set editor
+        var editor = CKEDITOR.replace('editor', {
+            height: '1212'
+        });
+
+        //print editor
+        function print() {
+            $('#examViewEditorModal').modal('toggle');
+            editor.execCommand("print");
+        }
+
+        //print answer
+        function printAnswer() {
+            var text = $("#answer_editor").val();
+            var w = window.open();
+            w.document.write(text);
+            w.print();
+            w.close();
+        }
+
+        // jQuery initialize function
+        $(function () {
+
+
+            // get group exam
+            window.getExamGroup = function (id) {
+                var arr = id.split("_");
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetExamGroup", "Exam")",
+                    dataType: "json",
+                    async: true,
+                    data: {
+                        examId: arr[0],
+                        examGroupIndex: arr[1]
+                    },
+                    success: function (response) {
+                        $("#examViewEditorModalTitle").html(response.name + " | Grup " + (parseInt(arr[1]) + 1));
+                        setExamEditor(response);
+                        //console.log(response);
+                    },
+                    error: function (er) { console.log(er); }
+                });
+            }//window.getExam = function (id)
+
+            // set exam editor
+            window.setExamEditor = function (response) {
+                var data = "", title = "", column = "",
+                    questionTest = "", questionClassic = "",
+                    count = 0, answer = "", answerRow = "", textarea = "";
+
+                title = '<div >';
+                title += '<div style="background:#eeeeee; border:1px solid #cccccc; padding:5px 10px" >';
+                title += '<p style="margin-left:20px; text-align:center"><span style="font-size:24px">';
+                title += '..... Sınav Başlığı ...</span></p> </div> <br>';
+                data = title;
+
+                column = '<div id="multiColumn" style="-webkit-column-count: 2;-moz-column-count: 2;column-count: 2;';
+                column += '-webkit-column-gap: 50%;-moz-column-gap: 50%;column-gap: 50%;';
+                column += '-webkit-column-rule-style: solid;-moz-column-rule-style: solid; column-rule-style: solid;">';
+                $.each(response.test, function (key, value) {
+                    count++;
+                    answer += count + ". " + value.answer;
+                    answer += (response.test.length == count) ? "\n" : ", ";
+
+                    questionTest = '<div>';
+                    questionTest += '<span style="margin-left:20px;"> <strong>' + count + '. ' + value.question + '</strong> </span><br />';
+                    questionTest += '<span style="margin-left:40px;"> &nbsp;&nbsp;&nbsp; A) ' + value.descriptionJ.a + ' </span><br />';
+                    questionTest += '<span style="margin-left:40px;"> &nbsp;&nbsp;&nbsp; B) ' + value.descriptionJ.b + ' </span><br />';
+                    if (value.descriptionJ.c != null) {
+                        questionTest += '<span style="margin-left:40px;"> &nbsp;&nbsp;&nbsp; C) ' + value.descriptionJ.c + ' </span><br />';
+                    }
+                    if (value.descriptionJ.d != null) {
+                        questionTest += '<span style="margin-left:40px;"> &nbsp;&nbsp;&nbsp; D) ' + value.descriptionJ.d + ' </span><br />';
+                    }
+                    if (value.descriptionJ.e != null) {
+                        questionTest += '<span style="margin-left:40px;"> &nbsp;&nbsp;&nbsp; E) ' + value.descriptionJ.e + ' </span><br />';
+                    }
+                    questionTest += '</div> <br />';
+                    column += questionTest;
+                });
+                column += '</div>';
+                data += column;
+
+                $.each(response.classic, function (key, value) {
+                    count++;
+                    answer += count + ". " + value.answer + "\n";
+
+                    questionClassic = '<div> <br />';
+                    questionClassic += '<span style="margin-left:20px;"> <strong> ' + (count) + '. ' + value.question + ' </strong> </span>';
+                    if (value.description != null) {
+                        questionClassic += '<span style="margin-left:40px;"> &nbsp;&nbsp;&nbsp;' + value.description + ' </span>';
+                    }
+                    questionClassic += '</div>';
+                });
+                data += questionClassic;
+
+                editor.insertHtml(data);
+                editor.setData(data);
+
+                textarea = '<textarea id="answer_editor" row="2" style="width:100%;max-width:100%;min-width:100%;">';
+                textarea += answer;
+                textarea += '</textarea>';
+
+                answerRow = '<div class="col-md-12 m0 p0">';
+                answerRow += textarea;
+                answerRow += '</div>';
+
+                answerRow += '<div class="col-md-1 m0 p0" style="width:0">';
+                answerRow += '<span class="pull-right">';
+                answerRow += '<button class="btn btn-block btn-primary" id="btnPrintEditor_answer" onclick="printAnswer();">';
+                answerRow += 'Cavapları Yazdır <i class="fa fa-print"></i>';
+                answerRow += '</button>';
+                answerRow += '</span>';
+                answerRow += '</div>';
+
+                $("#col-answer").html(answerRow);
+            }//window.setExamEditor = function (response)
+
+
+        });//$(function ())
+    </script>
+}

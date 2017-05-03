@@ -1,0 +1,138 @@
+﻿@model QuestionViewModel
+
+@{
+    ViewData["Title"] = "Soru Düzeltme";
+}
+
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Soru Düzeltme
+        <small>Klasik Soru</small>
+    </h1>
+</section>
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <i class="fa fa-edit"></i>
+                    <h3 class="box-title"> Düzelme Alanları </h3>
+                </div>
+                <div class="box-body">
+                    <!--edit classic questions -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form asp-controller="Question" asp-action="Edit" asp-route-id="@Model.Id" method="post" class="form-horizontal">
+
+                                <input asp-for="Id" type="hidden" />
+                                <input asp-for="qLessonGuid" type="hidden" />
+                                <input asp-for="qExamFormat" type="hidden" />
+                                <input asp-for="qExamType" type="hidden" />
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <label asp-for="Question" class="control-label"> </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <textarea asp-for="Question" class="form-control" rows="3" 
+                                                          style="max-width:100% !important" autofocus></textarea>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span asp-validation-for="Question" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <label asp-for="Description" class="control-label"> </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <textarea asp-for="Description" cols="5">
+                                                </textarea>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span asp-validation-for="Question" class="text-danger"></span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <label asp-for="Answer" class="control-label"> </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <textarea asp-for="Answer" class="form-control" rows="3"
+                                                          style="max-width:100% !important" autofocus></textarea>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span asp-validation-for="Answer" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-8">
+                                                <button type="submit" class="btn btn-primary pull-right">Kaydet</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div><!-- /.col -->
+    </div><!-- ./row -->
+</section><!-- /.content -->
+
+
+
+@section scripts{
+
+    <environment names="Development">
+        <script src="~/lib/ckeditor/ckeditor.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="//cdn.ckeditor.com/4.6.1/full/ckeditor.js"
+                asp-fallback-src="~/lib/ckeditor/ckeditor.js"
+                asp-fallback-test="window.CKeditor">
+        </script>
+    </environment>
+
+    <script type="text/javascript">
+
+        // set editor
+        var editor = CKEDITOR.replace('Description', {
+            height: '80'
+        });
+
+        // jQuery initialize function
+        $(function () {
+
+        });//$(function ())
+    </script>
+
+@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+

@@ -1,0 +1,97 @@
+﻿======= ef migrations ================
+
+dotnet restore
+dotnet ef migrations add Initial  (OR)  dotnet ef migrations add Initial -o Data\Migrations
+dotnet ef database update
+
+
+=================== NuGet ======================
+PM> Install-Package MySql.Data.EntityFrameworkCore -Pre
+------------------
+services.AddDbContext<ApplicationDbContext>(options =>
+     options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
+
+
+
+==================Get url======================
+string actionName = this.ControllerContext.RouteData.Values["action"].ToString();
+string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
+
+@this.Path.ToString()
+ /Views/Home/Index.cshtml
+
+ @ViewContext.RouteData.Values["Controller"]
+ @ViewContext.RouteData.Values["Action"]
+ @if(Url.RouteUrl("default") != null)
+{
+	@: routes.MapRoute( name: "default",.... dir
+}
+
+//get location url
+@Url.Action()
+
+// [Route("Teacher/Profile/{userName}/[action]")]
+@ViewContext.RouteData.Values["userName"]
+
+=============== Authorize ==========================
+ [Authorize] // just Login user to get
+ [Authorize(Roles="admin")] //just admin to get
+
+ bool r = User.IsInRole("Admin");// is user admin? true or false  
+
+ @inject UserManager<ApplicationUser> userManager
+<ul>
+    @foreach (var role in await userManager.GetRolesAsync(await userManager.FindByNameAsync(User.Identity.Name)))
+    {
+        <li>@role</li>
+    }
+</ul>
+
+=============== zencoding =========================
+ zencoding example
+ div.row>ul>li{Anasayfa $}*5
+
+ ============ string convert to json ===============
+static string x1 = "{'A':'36','B':'62','C':'70','D':'72','E':'76'}";
+static Object x3 = new { A = 36, B = 62, C = 70, D = 72, E = 76 };
+Object y = JObject.Parse(x1);//string convert to json format
+string y1 = x3.ToString();//json convert to string format
+
+//string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(employee);
+//var myclass = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(Jsonstring);
+DescriptionJ = Newtonsoft.Json.JsonConvert.DeserializeObject(q.Description)
+
+=================== string convert to html ==============================
+@Html.Raw(quetion.Description)
+
+@{ var myHtmlString = new HtmlString(mystring);}
+@myHtmlString
+
+@MvcHtmlString.Create(stringHtml)
+
+--------
+in html
+
+JSON.parse('@Html.Raw(stringJson)') //string json convert to javascript object
+JSON.parse('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Subjects))'); //c# model convert to javascript object
+
+--------
+
+
+So, if you want a rectangle the same size an an A4 (21 × 29.7 cm),
+ you should use 794 × 1122 pixels, or in CSS, width:794px; height:1122px. 
+But you can also use physical units, width:21cm; height:29.7cm
+
+============================== ========================================
+model.ForEach(n => _context.Users.Add(n));
+_context.SaveChanges();
+
+===================== ef join =========================================
+_context.Lessons.Join(_context.QuestionPools,
+                l => l.Id,
+                qp => qp.LessonId,
+                (l, qp) => new { Lesson = l, QuestionPool = qp })
+                .Where(x => x.Lesson.Id == 10)
+                .Select(s => new { lesson = s.Lesson, question = s.QuestionPool }).ToList();
+
+

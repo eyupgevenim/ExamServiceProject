@@ -1,0 +1,275 @@
+﻿@model QuestionViewModel
+
+@{
+    ViewData["Title"] = "Soru Ekleme";
+    //var result = new {error=false,message="" };
+    var result = ViewData["result"] as Result;
+    bool error = true;
+ }
+
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Soru Ekleme
+        <small>Klasik Soru</small>
+    </h1>
+</section>
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-body">
+
+                    <!--create classic questions -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @if (result !=null && result.error)
+                                    {
+                                        <span class="text-danger">@result.message</span>
+                                    }
+                                    else if(result != null)
+                                    {
+                                        error = false;
+                                        <span class="text-success">@result.message</span>
+                                    }
+                                    <br />
+                                    
+                                </div>
+                            </div>
+                            <form asp-controller="Question" asp-action="Create" method="post" class="form-horizontal">
+
+                                <input asp-for="qExamFormat" type="hidden" value="Klasik" />
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label pull-left"
+                                                           style="margin-left:0px;text-align:left;">Ders Seçiniz:</label>
+                                                    <div class="col-md-8">
+                                                        <select id="qLessonGuid" name="qLessonGuid" class="form-control"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label pull-left">Konu Seçiniz:</label>
+                                                    <div class="col-md-8">
+                                                        <select id="qSubjectId" name="qSubjectId" class="form-control"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @*<style>.cHeckBoxItems label{margin-left:20px;} </style>*@
+                                        <div class="form-group cHeckBoxItems" >
+                                            <label class="pull-left" for="tender" style="margin-left:20px;">Sınav Türü:</label>
+                                            <div class="col-md-10">
+                                                <label for="tender-0" style="margin-left:20px;">
+                                                    <input type="radio" name="qExamType" id="qVisa" value="Vize" aria-label="..." checked>
+                                                    Vize
+                                                </label>
+                                                <label for="tender-1" style="margin-left:20px;">
+                                                    <input type="radio" name="qExamType" id="qFinal" value="Final" aria-label="...">
+                                                    Final
+                                                </label>
+                                                <label for="tender-2" style="margin-left:20px;">
+                                                    <input type="radio" name="qExamType" id="qCompletion" value="Bütünleme" aria-label="...">
+                                                    Bütünlenme
+                                                </label>
+                                                <label for="tender-3" style="margin-left:20px;">
+                                                    <input type="radio" name="qExamType" id="qExcuse" value="Mazeret" aria-label="...">
+                                                    Mazeret
+                                                </label>
+                                                <label for="tender-3" style="margin-left:20px;">
+                                                    <input type="radio" name="qExamType" id="qSingleLesson" value="Tek Ders" aria-label="...">
+                                                    Tek Ders
+                                                </label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <label asp-for="Question" class="control-label"> </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <textarea asp-for="Question" class="form-control" rows="3"
+                                                          style="max-width:100% !important" autofocus></textarea>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span asp-validation-for="Question" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <label asp-for="Description" class="control-label"> </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <textarea asp-for="Description" cols="5">
+
+                                                </textarea>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span asp-validation-for="Description" class="text-danger"></span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <label asp-for="Answer" class="control-label"> </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <textarea asp-for="Answer" class="form-control" rows="3"
+                                                          style="max-width:100% !important" autofocus></textarea>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span asp-validation-for="Answer" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-8">
+                                                <button type="submit" class="btn btn-primary pull-right">Kaydet</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div><!-- /.col -->
+    </div><!-- ./row -->
+</section><!-- /.content -->
+
+
+
+@section scripts{
+
+    <environment names="Development">
+        <script src="~/lib/ckeditor/ckeditor.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="//cdn.ckeditor.com/4.6.1/full/ckeditor.js"
+                asp-fallback-src="~/lib/ckeditor/ckeditor.js"
+                asp-fallback-test="window.CKeditor">
+        </script>
+    </environment>
+
+    <script type="text/javascript">
+
+        // set editor
+        var editor = CKEDITOR.replace('Description', {
+            height: '80'
+        });
+
+
+        // jQuery initialize function
+        $(function () {
+
+            // get lessons list
+            window.GetLessons = function () {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetLessons", "Lesson")',
+                    dataType: 'json',
+                    async: true,
+                    success: function (response) {
+                        //console.log(response);
+                        $.each(response, function (key, value) {
+                            if (key == 0) getSubjects(value.guid);
+                            $("#qLessonGuid").append('<option value="'+value.guid+'">'+value.name+'</option>');
+                        });
+                    },//success:
+                    error: function (er) {
+                        console.log(er);
+                    }
+                });//$.ajax
+            }();//window.GetLessons = function ()
+
+            
+            $(document.body).on('change', '#qLessonGuid', function () {
+                var lessonGuid = this.value;
+                getSubjects(lessonGuid);
+            });
+
+            //get subjects list
+            window.getSubjects = function (lessonGuid) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetSubjects", "Lesson")',
+                    dataType: 'json',
+                    data: { guid: lessonGuid },
+                    async: true,
+                    success: function (response) {
+                        $("#qSubjectId").html("");
+                        $.each(response, function (key, value) {
+                            $("#qSubjectId").append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                    },//success:
+                    error: function (er) {
+                        console.log(er);
+                    }
+                });//$.ajax
+            }//window.getSubjects = function (lessonGuid)
+
+
+
+            if ("@error" == "False") {
+                $("#Question").val("");
+                editor.setData("");
+            }
+
+
+            /*
+            $(document.body).on("click", ".cHeckBoxItems input[type='radio']", function () {
+                //alert("değişti");
+            });
+            */
+
+
+        });//$(function ())
+    </script>
+
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+
+
+
+

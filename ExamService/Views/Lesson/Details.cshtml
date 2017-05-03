@@ -1,0 +1,351 @@
+﻿@model LessonViewModel
+@{
+    ViewData["Title"] = "Ders Ayrıntısı";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Ders Ayrıntı
+        <small></small>
+    </h1>
+
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+
+                    <i class="fa fa-list"></i>
+                    <h3 class="box-title">Ders ve Konuları</h3>
+                    <span class="pull-right">
+                        <a asp-controller="Lesson" asp-action="Edit" asp-route-id="@Model.Guid" class="btn btn-primary right-block">
+                            DERSİ DÜZENLE <i class="fa fa-edit"></i>
+                        </a>
+                    </span>
+                </div>
+                <div class="box-body">
+
+                    <!-- lesson details -->
+                    <div class="row">
+                        <div class="col-md-12" id="questionsList">
+                            <div class="box box-primary">
+                                <div class="box-body pad table-responsive">
+                                    <input type="hidden" name="lessonGuid" id="lessonGuid" value="@Model.Guid" />
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Dersin Adı :</label>
+                                            <div class="col-md-6">
+                                                <label class="form-control">@Model.Name</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Dersin Kodu :</label>
+                                            <div class="col-md-6">
+                                                <label class="form-control">@Model.Code</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Dersin Akts'si :</label>
+                                            <div class="col-md-6">
+                                                <label class="form-control">@Model.Akts</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Dersin Saati :</label>
+                                            <div class="col-md-6">
+                                                <label class="form-control">@Model.Hours</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Toplam Soru Sayısı :</label>
+                                            <div class="col-md-6">
+                                                <label class="form-control">@Model.SumQuesion</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label"></label>
+                                            <div class="col-md-6">
+                                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading" role="tab" id="headingOne">
+                                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                                                               aria-expanded="true" aria-controls="collapseOne">
+                                                                <h4 class="panel-title">Dersin Konuları</h4>
+                                                            </a>
+                                                        </div>
+                                                        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                                            <div class="panel-body">
+                                                                <table id="subject_table" class="table table-condensed">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Konu Adı</th>
+                                                                            <th>Soru sayısı</th>
+                                                                            <th>Düzenleme</th>
+                                                                            <th>Silme</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (var item in Model.Subjects)
+                                                                        {
+                                                                            <tr id="tr_subject_@item.Id">
+                                                                                <td id="subjectName_@item.Id">@item.SubjactName</td>
+                                                                                <td id="count_@item.Id">@item.QuestionCount</td>
+                                                                                <td>
+                                                                                    <button id="update_sub_@item.Id" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editSubjectModel"
+                                                                                            onclick="updateSubjectOpenModal(this.id);">
+                                                                                        Düzenle
+                                                                                    </button>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <button id="delete_sub_@item.Id" class="btn btn-danger btn-sm" onclick="deleteSubject(this.id);"> Sil</button>
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                                <div class="col-md-12">
+                                                                    <button class="btn btn-success btn-sm pull-right" title="Yeni Konu Ekle"
+                                                                            data-toggle="modal" data-target="#addSubjectModel">
+                                                                        <i class="fa fa-plus"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div><!-- /.col -->
+    </div><!-- ./row -->
+</section><!-- /.content -->
+
+<!-- Add subject modal -->
+<div id="addSubjectModel" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Yeni Konu Ekleme</h4>
+            </div>
+            <form class="form-horizontal" onsubmit="return false;">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="textinput">Konu Adı: </label>
+                                <div class="col-md-6">
+                                    <input type="text" name="aSubjectName" id="aSubjectName" class="form-control" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn btn-primary pull-right"
+                                    style="margin-left:10px;" onclick="addSubject();">
+                                Kaydet
+                            </button>
+                            <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">İptal</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Edit subject modal -->
+<div id="editSubjectModel" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Konu Düzenleme</h4>
+            </div>
+            <form class="form-horizontal" onsubmit="return false;">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="textinput">Konu Adı: </label>
+                                <div class="col-md-6">
+                                    <input type="hidden" name="eSubjectId" id="eSubjectId" value="" />
+                                    <input type="text" name="eSubjectName" id="eSubjectName" class="form-control" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-9">
+                            <button type="submit" class="btn btn-primary pull-right"
+                                    style="margin-left:10px;" onclick="updateSubject();">
+                                Güncelle
+                            </button>
+                            <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">İptal</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+@section scripts{
+    <script>
+        $(function () {
+
+            //add new subject
+            window.addSubject = function () {
+                var lessonGuid = $("#lessonGuid").val();
+                var subjectName = $("#aSubjectName").val().trim();
+                if (subjectName == "") {
+                    alert("Konu adı boş geçemezsiniz !");
+                    return;
+                }
+                console.log(lessonGuid, subjectName);
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("AddSubject", "Lesson")",
+                    dataType: "json",
+                    async: true,
+                    data: {
+                        lessonGuid: lessonGuid,
+                        subjectName: subjectName
+                    },
+                    success: function (response) {
+                        //console.log(response);
+                        if (!response.error) {
+                            $('#addSubjectModel').modal('toggle');
+
+                            var btn_update = '<button id="update_sub_' + response.subject.id + '" ';
+                            btn_update += 'class="btn btn-primary btn-sm" onclick="updateSubjectOpenModal(this.id)" ';
+                            btn_update += 'data-toggle="modal" data-target="#editSubjectModel" >';
+                            btn_update += 'Düzenle </button>';
+
+                            var btn_delete = '<button id="update_sub_' + response.subject.id + '" ';
+                            btn_delete +='class="btn btn-danger btn-sm" onclick="deleteSubject(this.id)" >';
+                            btn_delete += 'Sil </button>';
+
+                            var tr = $("<tr />", {"id":"tr_subject_"+ response.subject.id})
+                                        .append('<td id="subjectName_'+ response.subject.id+'">' + subjectName + '</td>')
+                                        .append('<td id="count_' + response.subject.id + '">0</td>')
+                                        .append('<td>' + btn_update + '</td>')
+                                        .append('<td>' + btn_delete + '</td>');
+
+                            $("#subject_table > tbody").append(tr);
+                        }
+
+                        alert(response.message);
+                    },
+                    error: function (er) { console.log(er); }
+                });
+            }//window.addSubject = function ()
+
+            //open modal for update subject
+            window.updateSubjectOpenModal = function (id) {
+                var arr = id.split("_");
+                var subjectName = $("#subjectName_" + arr[2]).text();
+                $("#eSubjectName").val(subjectName);
+                $("#eSubjectId").val(arr[2]);
+
+            }//window.updateSubjectOpenModal = function (id)
+
+            //update subject
+            window.updateSubject = function () {
+                var subjectName = $("#eSubjectName").val().trim();
+                var subjectId = $("#eSubjectId").val().trim();
+                if (subjectName == "") {
+                    alert("Konu adı boş geçemezsiniz !");
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("EditSubject", "Lesson")",
+                    dataType: "json",
+                    async: true,
+                    data: {
+                        subjectId: subjectId,
+                        subjectName: subjectName
+                    },
+                    success: function (response) {
+                        //console.log(response);
+                        if (!response.error) {
+                            $("#subjectName_" + subjectId).text(subjectName);
+                            $('#editSubjectModel').modal('toggle');
+                        }
+                        alert(response.message);
+                    },
+                    error: function (er) { console.log(er); }
+                });
+            }//window.updateSubject = function ()
+
+            //delete subject
+            window.deleteSubject = function (id) {
+                var r = false, questionCount, arr = id.split("_");
+                questionCount = parseInt($("#count_" + arr[2]).text());
+
+                if (questionCount > 0) {
+                    alert("Konuya ait " + questionCount + " tane soru var \n"
+                        + "Konuya ait tüm soruları silmeden konuyu silemezsiniz !!!");
+                } else {
+                    r = confirm("Konuyu silmek istediğinize emin misiniz ?!!! ");
+                }
+
+                if (r == true && questionCount == 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("DeleteSubject", "Lesson")",
+                        dataType: "json",
+                        async: true,
+                        data: { subjectId: arr[2] },
+                        success: function (response) {
+                            //console.log(response);
+                            if (!response.error) {
+                                $("#tr_subject_" + arr[2]).remove();
+                            }
+
+                            alert(response.message);
+                        },
+                        error: function (er) { console.log(er); }
+                    });
+                }
+            }//window.deleteSubject = function (id)
+
+        });
+    </script>
+}

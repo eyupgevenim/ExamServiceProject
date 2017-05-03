@@ -1,0 +1,170 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@{ 
+    var LoginUser = UserManager.GetUserAsync(User).Result;
+    var action = ViewContext.RouteData.Values["Action"].ToString();
+    var controller = ViewContext.RouteData.Values["Controller"].ToString();
+    var qFormat = "";
+    if (ViewContext.RouteData.Values["id"] != null) {
+        qFormat = ViewContext.RouteData.Values["id"].ToString();
+    }
+}
+
+<header class="main-header">
+    <!-- Logo -->
+    <a asp-controller="Question" asp-action="Index" class="logo">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini">ES</span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg"><b>Exam Service</b></span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top" role="navigation">
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                <li class="dropdown user user-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="~/lib/admin-lte/dist/img/avatar5.png" class="user-image" alt="User Image" />
+                        <span class="hidden-xs">@LoginUser.UserName</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!-- User image -->
+                        <li class="user-header">
+                            <img src="~/lib/admin-lte/dist/img/avatar5.png" class="img-circle" alt="User Image" />
+                            <p>
+                                @LoginUser.UserName
+                                <small>@LoginUser.Email</small>
+                            </p>
+                        </li>
+
+                        <!-- Menu Body .................. -->
+                        <li class="user-body">
+                            <div class="col-xs-4 text-center">
+                                <a href="#">Takipçiler</a>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <a href="#">Arkadaşlar</a>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <a href="#">Ayarlar</a>
+                            </div>
+                        </li>
+
+                        <!-- Menu Footer-->
+                        <li class="user-footer">
+                            <div class="pull-left">
+                                <a href="#" class="btn btn-default btn-flat">Profil</a>
+                            </div>
+                            <div class="pull-right">
+                                <form asp-controller="Account" asp-action="LogOff" method="post">
+                                    <button type="submit" class="btn btn-default btn-flat">Çıkış Yap</button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+
+<!-- Left side column. contains the logo and sidebar -->
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel -->
+        <div class="user-panel">
+            <div class="pull-left image">
+                <img src="~/lib/admin-lte/dist/img/avatar5.png" class="img-circle" alt="User Image" />
+            </div>
+            <div class="pull-left info">
+                <p>@LoginUser.UserName</p>
+                <a asp-controller="Question" asp-action="Index">
+                    <i class="fa fa-circle-o text-aqua"></i> @LoginUser.Email
+                </a>
+            </div>
+        </div>
+
+        <!-- search form ...... ............-->
+        @await Html.PartialAsync("Layouts/Partials/ExamService/_Search")
+
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+
+            <li class="header">MAIN NAVIGATION</li>
+
+            <li class="treeview @if(controller == "Question"){@("active")}">
+                <a href="#">
+                    <i class="fa fa-question-circle" style="font-size:large"></i>
+                    <span>Soru İşlemleri</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu menu-open">
+                    <li class="@if(controller == "Question" && action == "Index"){@("active")}">
+                        <a asp-controller="Question" asp-action="Index">
+                            <i class="fa fa-list"></i> Soru Özet
+                        </a>
+                    </li>
+                    <li class="@if(action == "Create" && qFormat == "Test"){@("active")}">
+                        <a asp-controller="Question" asp-action="Create" asp-route-id="Test">
+                            <i class="fa fa-plus"></i> Test Ekleme
+                        </a>
+                    </li>
+                    <li class="@if(action == "Create" && qFormat == "Classic"){@("active")}">
+                        <a asp-controller="Question" asp-action="Create" asp-route-id="Classic">
+                            <i class="fa fa-plus"></i> Klasik Ekleme
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="treeview @if(controller == "Lesson"){@("active")}">
+                <a href="#">
+                    <i class="fa fa-book" style="font-size:large"></i>
+                    <span>Ders İşlemleri</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu menu-open">
+                    <li class="@if(controller == "Lesson" && action == "Index"){@("active")}">
+                        <a asp-controller="Lesson" asp-action="Index">
+                            <i class="fa fa-list"></i> Ders Listesi
+                        </a>
+                    </li>
+                    <li class="@if(controller == "Lesson" && action == "Create"){@("active")}">
+                        <a asp-controller="Lesson" asp-action="Create">
+                            <i class="fa fa-plus"></i> Ders Ekleme
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="treeview @if(controller == "Exam"){@("active")}">
+                <a href="#">
+                    <i class="fa fa-edit" style="font-size:large"></i>
+                    <span>Sınav Kipi</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu menu-open" @*style="display: block;"*@>
+                    <li class="@if(controller == "Exam" && action == "Index"){@("active")}">
+                        <a asp-controller="Exam" asp-action="Index">
+                            <i class="fa fa-plus"></i> Sınav Oluşturma
+                        </a>
+                    </li>
+                    <li class="@if(controller == "Exam" && action == "List"){@("active")}">
+                        <a asp-controller="Exam" asp-action="List">
+                            <i class="fa fa-list"></i> Geçmiş Sınavlar
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>

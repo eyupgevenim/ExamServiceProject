@@ -1,0 +1,87 @@
+﻿@model QuestionViewModel
+
+@{
+    ViewData["Title"] = "Soru Silme";
+}
+
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Soru Silme
+        <small></small>
+    </h1>
+
+</section>
+
+<section class="content">
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="text-center"> Soru silmek istediğinize emin misiniz?</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12" style="text-align:center">
+
+                    <div class="form-horizontal">
+
+                        <div class="row">
+                            <div class="col-md-12" >
+                                <h4> <small>@Model.qExamType | @Model.qExamFormat </small> </h4>
+                                <h4><span > @Model.Question </span> </h4>
+
+
+                                @if (Model.qExamFormat == "Test")
+                                {
+                                    <p style='margin-left:30px;'> <strong>A)</strong> @Model.DescriptionJ.A </p>
+                                    <p style='margin-left:30px;'> <strong>B)</strong> @Model.DescriptionJ.B </p>
+
+                                    if (Model.DescriptionJ.C != null)
+                                    {
+                                        <p style='margin-left:30px;'> <strong>C)</strong> @Model.DescriptionJ.C </p>
+                                    }
+                                    if (Model.DescriptionJ.D != null)
+                                    {
+                                        <p  style='margin-left:30px;'> <strong>D)</strong> @Model.DescriptionJ.D </p>
+                                    }
+                                    if (Model.DescriptionJ.E != null)
+                                    {
+                                        <p style='margin-left:30px;'> <strong>E)</strong> @Model.DescriptionJ.E </p>
+                                    }
+
+                                }
+                                else if (Model.qExamFormat == "Klasik")
+                                {
+                                    if (Model.Description != null)
+                                    {
+                                        <p style='margin-left:30px;'> @Html.Raw(Model.Description) </p>
+                                    }
+                                }
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="row">
+                            <div class="col-md-10 col-md-offset-2">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-md-offset-2">
+                                        <a asp-controller="Question" asp-action="Details" asp-route-id="@Model.qLessonGuid"
+                                           class="btn btn-primary pull-right" style="margin-left:10px">İptal Et</a>
+                                        <form asp-controller="Question" asp-action="Delete" method="post">
+                                            <input type="hidden" name="confirm" value="true" />
+                                            <input asp-for="Id" type="hidden" />
+                                            <button type="submit" class="btn btn-danger pull-right">Sil</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+</section>
+
+

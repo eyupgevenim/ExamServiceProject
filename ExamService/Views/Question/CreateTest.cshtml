@@ -1,0 +1,377 @@
+﻿@model QuestionViewModel
+
+@{
+    ViewData["Title"] = "Soru Ekleme";
+    //var result = new {error=false,message="" };
+    var result = ViewData["result"] as Result;
+    bool error = true;
+
+}
+
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Soru Ekleme
+        <small>Test Soru</small>
+    </h1>
+</section>
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-body">
+
+                    <!--create tets questions -->
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    @if (result != null && result.error)
+                                    {
+                                        <span class="text-danger">@result.message</span>
+                                    }
+                                    else if (result != null)
+                                    {
+                                        error = false;
+                                        <span class="text-success">@result.message</span>
+                                    }
+                                    <br />
+
+                                </div>
+                            </div>
+
+                            <form asp-controller="Question" asp-action="Create" method="post" class="form-horizontal">
+                                <input asp-for="qExamFormat" type="hidden" value="Test" />
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label pull-left" 
+                                                           style="margin-left:0px;text-align:left;">Ders Seçiniz:</label>
+                                                    <div class="col-md-8">
+                                                        <select id="qLessonGuid" name="qLessonGuid" class="form-control"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="col-md-3 control-label pull-left">Konu Seçiniz:</label>
+                                                    <div class="col-md-8">
+                                                        <select id="qSubjectId" name="qSubjectId" class="form-control"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <style>
+                                            .cHeckBoxItems label {
+                                                margin-left: 20px;
+                                            }
+                                        </style>
+                                        <div class="form-group cHeckBoxItems">
+                                            <label class="pull-left" for="tender">Sınav Türü:</label>
+                                            <div class="col-md-10">
+                                                <label for="tender-0">
+                                                    <input type="radio" name="qExamType" id="qVisa" value="Vize" aria-label="..." checked>
+                                                    Vize
+                                                </label>
+                                                <label for="tender-1">
+                                                    <input type="radio" name="qExamType" id="qFinal" value="Final" aria-label="...">
+                                                    Final
+                                                </label>
+                                                <label for="tender-2">
+                                                    <input type="radio" name="qExamType" id="qCompletion" value="Bütünleme" aria-label="...">
+                                                    Bütünlenme
+                                                </label>
+                                                <label for="tender-3">
+                                                    <input type="radio" name="qExamType" id="qExcuse" value="Mazeret" aria-label="...">
+                                                    Mazeret
+                                                </label>
+                                                <label for="tender-3">
+                                                    <input type="radio" name="qExamType" id="qSingleLesson" value="Tek Ders" aria-label="...">
+                                                    Tek Ders
+                                                </label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <label asp-for="Question" class="control-label"> </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <textarea asp-for="Question" class="form-control" rows="3"
+                                                          style="max-width:100% !important" autofocus required></textarea>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span asp-validation-for="Question" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="testOptions" class="testOptions">
+
+                                    <div class="row" id="row_A">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <div class="input-group" id="inputGroup_A">
+                                                        <span class="input-group-addon" id="add-B-addon">  A  )</span>
+                                                        <input asp-for="DescriptionJ.A" class="form-control" aria-describedby="add-A-addon" required />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <span asp-validation-for="DescriptionJ.A" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" id="row_B">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <div class="input-group" id="inputGroup_B">
+                                                        <span class="input-group-addon" id="add-B-addon">  B  )</span>
+                                                        <input asp-for="DescriptionJ.B" class="form-control" aria-describedby="add-B-addon" required />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <span asp-validation-for="DescriptionJ.B" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" id="row_C">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <div class="input-group" id="inputGroup_C">
+                                                        <span class="input-group-addon" id="add-C-addon">  C  )</span>
+                                                        <input asp-for="DescriptionJ.C" class="form-control" aria-describedby="add-C-addon" required />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <span asp-validation-for="DescriptionJ.C" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" id="row_D">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <div class="input-group" id="inputGroup_D">
+                                                        <span class="input-group-addon" id="add-D-addon">  D  )</span>
+                                                        <input asp-for="DescriptionJ.D" class="form-control" aria-describedby="add-D-addon" required />
+                                                        <span class="input-group-addon remove-span" id="remove-span_D">
+                                                            <a href="#" onclick="return false;" class="remove">
+                                                                <i class="fa fa-remove" style="color:red"></i>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <span asp-validation-for="DescriptionJ.D" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+
+                                                    <label asp-for="Answer" class="control-label pull-left" style="margin-left:20px;"></label>
+                                                    
+                                                    <div class="col-md-2">
+                                                        <select asp-for="Answer" asp-items="Model.AnswerTestItems" class="form-control">
+                                                        </select>
+                                                    </div>
+
+                                                    <a onclick="return false;" id="addOption" class="btn btn-success pull-right" style="margin-right:15px;" title="Şık Ekle">
+                                                        <i class="fa fa-plus-circle" style="font-size:large;"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="col-md-8">
+                                                <button type="submit" class="btn btn-primary pull-right">Kaydet</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div><!-- /.col -->
+    </div><!-- ./row -->
+</section><!-- /.content -->
+
+
+
+@section scripts{
+
+    <script type="text/javascript">
+
+        // jQuery initialize function
+        $(function () {
+
+            //options array
+            var arrOptions = ["A", "B", "C", "D", "E"];
+
+            // add option input
+            $(document.body).on("click", "#addOption", function () {
+                var options = $("#testOptions input");
+
+                if (options.length >= arrOptions.length) {
+                    alert("Daha seçenek ekleyemezsiniz !");
+                    return;
+                }
+
+                $("#row_" + arrOptions[options.length - 1] + " .remove-span").remove();
+                var option = arrOptions[options.length];
+
+                var rowOption = '<div class="row" id="row_' + option + '"><div class="col-md-12"><div class="form-group">' +
+                                '<div class="col-md-8"><div class="input-group" id="inputGroup_' + option + '">' +
+                                '<span class="input-group-addon" id="add-' + option + '-addon"> ' + option + '  )</span>' +
+                                '<input asp-for="DescriptionJ.' + option + '" class="form-control" aria-describedby="add-' + option + '-addon" required/>' +
+                                '<span class="input-group-addon remove-span" id="remove-span_' + option + '" onclick="return false;">' +
+                                '<a href="#" onclick="return false;" class="remove">' +
+                                '<i class="fa fa-remove" style="color:red"></i></a></span></div></div>' +
+                                '<div class="col-md-4"><span asp-validation-for="DescriptionJ.' + option + '" class="text-danger"></span>' +
+                                '</div></div></div></div>';
+
+                $("#testOptions").append(rowOption);
+                $("#Answer").append('<option value="' + option + '">' + option + '</option>');
+
+                return;
+
+                //console.log(arrOptions);
+                //console.log(option);
+
+            });
+
+            // remove option input
+            $(document.body).on("click", "#testOptions .remove-span", function () {
+
+                var perentId = this.id;
+                var parse = perentId.split("_");
+                var removeOption = parse[1];
+                $("#row_" + removeOption).remove();
+                $("#Answer option[value ='" + removeOption + "']").remove();
+
+                var inputCount = jQuery.inArray(removeOption, arrOptions);
+                var option = arrOptions[inputCount - 1];
+
+                if (inputCount == 2) return;
+
+                $("#testOptions #inputGroup_" + option).append(
+                    '<span class="input-group-addon remove-span" id="remove-span_' + option + '"><a href=""onclick="return false;" class="remove">'
+                   + '<i class="fa fa-remove" style="color:red"></i> </a> </span>');
+            });
+
+
+            // get lessons list
+            window.GetLessons = function () {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetLessons", "Lesson")',
+                    dataType: 'json',
+                    async: true,
+                    success: function (response) {
+                        $.each(response, function (key, value) {
+                            if (key == 0) getSubjects(value.guid);
+                            $("#qLessonGuid").append('<option value="' + value.guid + '">' + value.name + '</option>');
+                        });
+                    },//success:
+                    error: function (er) {
+                        console.log(er);
+                    }
+                });//$.ajax
+            }();//window.GetLessons = function ()
+
+
+            $(document.body).on('change', '#qLessonGuid', function () {
+                var lessonGuid = this.value;
+                getSubjects(lessonGuid);
+            });
+
+            //get subjects list
+            window.getSubjects = function (lessonGuid) {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetSubjects", "Lesson")',
+                    dataType: 'json',
+                    data: { guid: lessonGuid },
+                    async: true,
+                    success: function (response) {
+                        $("#qSubjectId").html("");
+                        $.each(response, function (key, value) {
+                            $("#qSubjectId").append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                    },//success:
+                    error: function (er) {
+                        console.log(er);
+                    }
+                });//$.ajax
+            }//window.getSubjects = function (lessonGuid) 
+
+
+            if ("@error" == "False") {
+                $("#Question").val("");
+                $.each($("#testOptions input"), function (key, value) {
+                    $(this).val("");
+                });
+            }
+
+
+
+
+        });//$(function ())
+    </script>
+
+    @*@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }*@
+}
+
+
+
+
+
+

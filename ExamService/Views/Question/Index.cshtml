@@ -1,0 +1,87 @@
+﻿@model IEnumerable<QuestionSummaryViewModel>
+@{
+    ViewData["Title"] = "Özet";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Özet
+        <small>Derslerin Soru Sayısı</small>
+    </h1>
+
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+
+                    <i class="fa fa-list"></i>
+                    <h3 class="box-title">Derslerin Soru Sayısı</h3>
+
+                </div>
+                <div class="box-body">
+
+                    <!--questions count table screen -->
+                    <div class="row">
+                        <div class="col-md-12" id="questionsCountSummaryTable">
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <h3 class="box-title">Ders Soruları</h3>
+                                </div>
+                                <div class="box-body pad table-responsive">
+                                    <table class="table table-responsive" id="lessonssQuestionsTable">
+                                        <tr>
+                                            <th>Ders Adı</th>
+                                            <th>Vize</th>
+                                            <th>Final</th>
+                                            <th>Bütünleme</th>
+                                            <th>Mazeret</th>
+                                            <th>Tek Ders</th>
+                                            <th>Soruları Listeleme</th>
+                                        </tr>
+                                        @foreach (var lesson in Model)
+                                        {
+                                            var vize = lesson.Questions.Where(x=>x.ExamTypeName=="Vize").FirstOrDefault();
+                                            var final = lesson.Questions.Where(x => x.ExamTypeName == "Final").FirstOrDefault();
+                                            var completion = lesson.Questions.Where(x => x.ExamTypeName == "Bütünleme").FirstOrDefault();
+                                            var excuse = lesson.Questions.Where(x => x.ExamTypeName == "Mazeret").FirstOrDefault();
+                                            var singleLesson = lesson.Questions.Where(x => x.ExamTypeName == "Tek Ders").FirstOrDefault();
+                                            <tr>
+                                                <td>@lesson.LessonName</td>
+                                                <td>
+                                                    @if (vize == null){ @("0")} else {@vize.Count}
+                                                </td>
+                                                <td>
+                                                    @if (final == null){ @("0")} else {@final.Count}
+                                                </td>
+                                                <td>
+                                                    @if (completion == null){ @("0")} else {@completion.Count}
+                                                </td>
+                                                <td>
+                                                   @if (excuse == null){ @("0")} else {@excuse.Count}
+                                                </td>
+                                                <td>
+                                                    @if (singleLesson == null){ @("0")} else {@singleLesson.Count}
+                                                </td>
+                                                <td>
+                                                    <a asp-controller="Question" asp-action="Details" 
+                                                       asp-route-id="@lesson.LessonGuid" class="btn btn-primary">Listele</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div><!-- /.col -->
+    </div><!-- ./row -->
+</section><!-- /.content -->
+

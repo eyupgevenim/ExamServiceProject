@@ -1,0 +1,128 @@
+﻿@model IEnumerable<ListQuestionViewModel>
+
+@{
+    ViewData["Title"] = "Soru Listesi";
+    var lesson = new { Guid = Model.FirstOrDefault().LessonGuid, Name = Model.FirstOrDefault().LessonName };
+    int page = (int)ViewData["page"];
+    int active = (int)ViewData["active"];
+    var x = (page - 1) * 20;
+
+}
+
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Soru Listesi
+        <small>Dersin tüm soruları</small>
+    </h1>
+
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+
+                    <i class="fa fa-list"></i>
+                    <h3 class="box-title">@lesson.Name Dersin Soru Listesi</h3>
+
+                </div>
+                <div class="box-body">
+
+                    <!-- questions list -->
+                    <div class="row">
+                        <div class="col-md-12" id="questionsList">
+                            <div class="box box-primary">
+                                <div class="box-body pad table-responsive" id="@lesson.Guid">
+                                    @foreach (var question in Model)
+                                    {
+                                        x++;
+                                        <div class="callout callout-default" style="border:5px solid #eee !important;">
+
+                                            <div class="box-tools pull-right" id="editQuestion_@question.Id">
+                                                <a asp-controller="Question" asp-action="Edit" asp-route-id="@question.Id" 
+                                                   class="btn btn-primary" title="Düzenle"><i class="fa fa-edit"></i></a>
+
+                                                <a asp-controller="Question" asp-action="Delete" asp-route-id="@question.Id"
+                                                   class="btn btn-danger" title="Sil"><span class="glyphicon glyphicon-trash"></span></a>
+                                            </div>
+
+                                            <h4> <small>@question.Subject |  @question.ExamType | @question.ExamFormat </small> </h4>
+                                            <h4> @x.  <span id="editTitle_@question.Id"> @question.Question </span> </h4>
+
+
+                                            @if (question.ExamFormat == "Test")
+                                            {
+                                                <p id='editOption_A_@question.Id' style='margin-left:30px;'> A) @question.DescriptionJ.A </p>
+                                                <p id='editOption_B_@question.Id' style='margin-left:30px;'> B) @question.DescriptionJ.B </p>
+
+                                                if (@question.DescriptionJ.C != null)
+                                                {
+                                                    <p id='editOption_C_@question.Id' style='margin-left:30px;'> C) @question.DescriptionJ.C </p>
+                                                }
+                                                if (@question.DescriptionJ.D != null)
+                                                {
+                                                    <p id='editOption_D_@question.Id' style='margin-left:30px;'> D) @question.DescriptionJ.D </p>
+                                                }
+                                                if (@question.DescriptionJ.E != null)
+                                                {
+                                                    <p id='editOption_E_@question.Id' style='margin-left:30px;'> E) @question.DescriptionJ.E </p>
+                                                }
+                                            }
+                                            else if (question.ExamFormat == "Klasik")
+                                            {
+                                                if (question.Description != "")
+                                                {
+
+                                                    <span id='editDescription_@question.Id' style='margin-left:30px;'> 
+                                                       @Html.Raw(question.Description)
+                                                    </span>
+                                                }
+                                            }
+                                            
+                                            <h5><b>Cevap : @question.Answer </b></h5>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="box-footer">
+                                    @if (page > 1)
+                                    {
+                                        <ul class="pagination pagination-sm no-margin pull-right">
+                                            @if (active > 1)
+                                            {
+                                                <li>
+                                                    <!-- .../Question/Details/Guid?page=active-1 -->
+                                                    <a asp-controller="Question" asp-action="Details"
+                                                       asp-route-id="@lesson.Guid" asp-route-page="@(active-1)">&laquo;</a>
+                                                </li>
+                                            }
+                                            @for (int i = 1; i <= page; i++)
+                                            {
+                                                <li class="@(active == i?"active":"")">
+                                                    <a asp-controller="Question" asp-action="Details" 
+                                                       asp-route-id="@lesson.Guid" asp-route-page="@i">@i</a>
+                                                </li>
+                                            }
+                                            @if (active != page)
+                                            {
+                                                <li>
+                                                    <a asp-controller="Question" asp-action="Details"
+                                                       asp-route-id="@lesson.Guid" asp-route-page="@(active+1)">&raquo;</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div><!-- /.col -->
+    </div><!-- ./row -->
+</section><!-- /.content -->
