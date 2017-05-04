@@ -43,7 +43,7 @@
                                         <td id="classicCount">0</td>
                                         <td>
                                             <button id="showSelectedQuestions" class="btn btn-primary" data-toggle="modal" 
-                                                    data-target="#modalSelectedQuestions" disabled>Göster</button>
+                                                    data-target="#modalSelectedQuestions" onclick="ShowSelectedQuestions();" disabled>Göster</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -128,14 +128,24 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                <h4 class="modal-title" id="myModalLabel">Seçilmiş Sorular</h4>
             </div>
             <div class="modal-body">
-                ...
+
+                <!-- question list -->
+                <div class="row">
+                    <div class="col-md-12" id="selectedQuestionsList">
+                        <div class="box-body pad table-responsive">
+                            <!-- body -->
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <form action="@Url.Action()" method="post" onsubmit="SetExamQuestion();" id="selectedQuestionForm">
+                    <button type="submit" class="btn btn-primary">Sınavı Oluştur</button>
+                </form>
             </div>
         </div>
     </div>
@@ -156,6 +166,89 @@
             $("#checkboxFormatItemas input[type='checkbox']").change(function () {
                 GetQuestion();
             });
+
+            //when submit selected questions 
+            window.SetExamQuestion = function () {
+                $('<input />').attr('type', 'hidden')
+                    .attr("id", "questionIds")
+                    .attr('name', "questionIds")
+                    .attr('value', JSON.stringify(exam.questions))
+                    .appendTo('#selectedQuestionForm');
+                return true;
+            }//window.SetExamQuestion = function () 
+
+            //showe selected questions
+            window.ShowSelectedQuestions = function () {
+                if (exam.questions.length <= 0) {
+                    $('#modalSelectedQuestions').modal('hide');
+                    alert("Soru seçmelisiniz !");
+                    return;
+                }
+                var lessonGuid = $("#lessonGuid").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetSelectedQuestions", "Exam")",
+                    dataType: "json",
+                    async: true,
+                    data: {
+                        lessonGuid: lessonGuid,
+                        questionIds: JSON.stringify(exam.questions)
+                    },
+                    success: function (response) {
+                        //console.log(response);
+
+                        var box_body = $("#selectedQuestionsList .box-body");
+                        box_body.html("");
+
+                        $.each(response.questions, function (index, question) {
+
+                            var checkbox = $("<input />", {
+                                "type": "checkbox",
+                                "name": "selecte_checkbox_" + question.id,
+                                "id": "selecte_checkbox_" + question.id
+                            });
+
+
+                            var callout = $("<div />", {
+                                "id": "question_callout_" + question.id,
+                                "class": "callout callout-default",
+                                "format": question.examFormat,
+                                style: "border:5px solid #eee !important;"
+                            });
+
+
+                            callout.append('<h4> <small>' + question.subject + ' | ' + question.examType + ' | ' + question.examFormat + ' </small> </h4>')
+                                   .append('<h4><span id="editTitle_' + question.id + '"> ' + question.question + ' </span> </h4>');
+
+                            if (question.examFormat == "Test") {
+                                callout.append('<p style="margin-left:30px;"> A) ' + question.descriptionJ.a + '</p>')
+                                        .append('<p style="margin-left:30px;"> B) ' + question.descriptionJ.b + ' </p>');
+
+                                if (question.descriptionJ.c != null) {
+                                    callout.append('<p style="margin-left:30px;"> C) ' + question.descriptionJ.c + ' </p>');
+                                }
+                                if (question.descriptionJ.d != null) {
+                                    callout.append('<p style="margin-left:30px;"> D) ' + question.descriptionJ.d + ' </p>');
+                                }
+                                if (question.descriptionJ.e != null) {
+                                    callout.append('<p style="margin-left:30px;"> E) ' + question.descriptionJ.e + ' </p>');
+                                }
+                            } else if (question.examFormat == "Klasik") {
+                                if (question.description != null) {
+                                    callout.append('<span style="margin-left:30px;">' + question.description + '</span>');
+                                }
+                            }
+                            callout.append('<h5><b>Cevap : ' + question.answer + '</b></h5>');
+
+                            box_body.append(callout);
+
+                        });
+                    },
+                    error: function (er) { console.log(er); }
+                });
+
+            }//window.ShowSelectedQuestions = function ()
 
             //create pager
             window.SetFooterPager = function (count, active) {

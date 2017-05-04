@@ -46,12 +46,14 @@ namespace ExamService.Controllers
             return View(exams);
         }
 
+        //GET: Exam/Create
         [HttpGet]
         public IActionResult Create()
         {
             return RedirectToAction("Index");
         }
 
+        //POST: Exam/Create
         [HttpPost]
         public IActionResult Create(QuestionAttributeViewModel model)
         {
@@ -143,7 +145,7 @@ namespace ExamService.Controllers
             return View(SetExamPages(test, classic, model.eGroup, model.eGroupFormat, model.eTest, model.eClassic));
         }
 
-        //[Route("Exam/Create/Manual/{id}")]
+        //GET: Exam/Create/Manual/5
         [HttpGet("Exam/Create/Manual/{lessonGuid}")]
         public IActionResult Manual(string lessonGuid)
         {
@@ -173,6 +175,55 @@ namespace ExamService.Controllers
                                         }).FirstOrDefault());
         }
 
+        //POST: Exam/Create/Manual/5
+        [HttpPost("Exam/Create/Manual/{lessonGuid}")]
+        public IActionResult Manual(string lessonGuid, string questionIds)
+        {
+            var keyQuestionIds = Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(questionIds).ToList();
+
+            var test = _context.QuestionPools
+                                   .Where(x =>
+                                         x.Lesson.Guid == GetLesson(lessonGuid).Guid
+                                         && x.Delete == false
+                                         && keyQuestionIds.Contains(x.Id)
+                                         && x.ExamFormat == "Test")
+                                    .Select(q => new Test
+                                    {
+                                        Id = q.Id,
+                                        Question = q.Question,
+                                        DescriptionJ = Newtonsoft.Json.JsonConvert.DeserializeObject<Option>(q.Description),
+                                        Answer = q.Answer
+                                    }).ToList();
+
+            var classic = _context.QuestionPools
+                                   .Where(x =>
+                                         x.Lesson.Guid == GetLesson(lessonGuid).Guid
+                                         && x.Delete == false
+                                         && keyQuestionIds.Contains(x.Id)
+                                         && x.ExamFormat == "Klasik")
+                                    .Select(q => new Classic
+                                    {
+                                        Id = q.Id,
+                                        Question = q.Question,
+                                        Description = q.Description,
+                                        Answer = q.Answer
+                                    }).ToList();
+
+            ViewData["lessonGuid"] = GetLesson(lessonGuid).Guid;
+
+            return View("Create", new List<ExamViewModel>
+            {
+                new ExamViewModel
+                {
+                    Group = "GroupNo",
+                    GroupFormat = "FormatNo",
+                    Test = test,
+                    Classic = classic
+                }
+            });
+        }
+
+        //ajax -> Exam/GetQuestionForManual?lessonGuid=5&format=[]&subjectIds=[]&active=2
         [HttpPost]
         public IActionResult GetQuestionForManual(string lessonGuid, string format, string subjectIds, int active=1)
         {
@@ -229,7 +280,32 @@ namespace ExamService.Controllers
             return Json(new { questions = questions.ToList(), count = count });
         }
 
-        //ajax
+        //ajax -> Exam/GetSelectedQuestions?lessonGuid=5&questionIds=[]
+        [HttpPost]
+        public IActionResult GetSelectedQuestions(string lessonGuid, string questionIds)
+        {
+            var keyQuestionIds = Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(questionIds);
+            return Json(new { questions = _context.Lessons
+                                            .Where(x => x.Guid == lessonGuid && x.UserId == GetUser.Id && x.Delete == false)
+                                            .Select(l => l.QuestionPools
+                                                        .Where(r => r.Delete == false
+                                                            && keyQuestionIds.Contains(r.Id))
+                                                        .Select(q => new
+                                                        {
+                                                            Id = q.Id,
+                                                            ExamFormat = q.ExamFormat,
+                                                            ExamType = q.ExamType,
+                                                            Question = q.Question,
+                                                            DescriptionJ = q.ExamFormat == "Test" ? Newtonsoft.Json.JsonConvert.DeserializeObject<Option>(q.Description) : null,
+                                                            Description = q.ExamFormat == "Klasik" ? q.Description : "",
+                                                            Answer = q.Answer,
+                                                            Subject = q.Subcject.Name
+                                                        }).ToList()
+                                                ).FirstOrDefault()
+            });
+        }
+
+        //ajax -> Exam/GetSubjects?guid=5
         [HttpGet]
         public IActionResult GetSubjects(string guid)
         {
@@ -247,7 +323,7 @@ namespace ExamService.Controllers
             });
         }
 
-        //ajax
+        //ajax -> Exam/GetQuestionsTypeCount?guid=5&subjectIds=[]
         [HttpGet]
         public IActionResult GetQuestionsTypeCount(string guid, string subjectIds)
         {
@@ -280,7 +356,7 @@ namespace ExamService.Controllers
             return Json(new { examType = examTypeGroup, examFormat = examFormatGroup });
         }
 
-        //ajax
+        //ajax -> Exam/GetQuestionsFomatCount?guid=5&types=[]&subjectIds=[]
         [HttpGet]
         public IActionResult GetQuestionsFomatCount(string guid, string types, string subjectIds)
         {
@@ -324,7 +400,7 @@ namespace ExamService.Controllers
             }
         }
 
-        //ajax
+        //ajax -> Exam/SaveExamGroups?lessonGuid=5&exam=[]&name=demo
         [HttpPost]
         public IActionResult SaveExamGroups(string lessonGuid, string exam , string name)
         {
@@ -345,8 +421,8 @@ namespace ExamService.Controllers
                 return Json(new { error = true, message = "Kayıt sırasında bir hata oluştu" });
             }
         }
-        
-        //ajax
+
+        //ajax -> Exam/GetExamGroup?examId=5&examGroupIndex=1
         [HttpPost]
         public IActionResult GetExamGroup(string examId, int examGroupIndex)
         {
