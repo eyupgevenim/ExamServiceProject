@@ -68,8 +68,16 @@
                                                     @if (singleLesson == null){ @("0")} else {@singleLesson.Count}
                                                 </td>
                                                 <td>
-                                                    <a asp-controller="Question" asp-action="Details" 
-                                                       asp-route-id="@lesson.LessonGuid" class="btn btn-primary">Listele</a>
+                                                    @if (lesson.Questions.Count() > 0)
+                                                    {
+                                                        <a asp-controller="Question" asp-action="Details"
+                                                           asp-route-id="@lesson.LessonGuid" class="btn btn-primary">Listele</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a asp-controller="Question" asp-action="Details" class="btn btn-primary disabled">Listele</a>
+                                                    }
+
                                                 </td>
                                             </tr>
                                         }

@@ -8,15 +8,16 @@ namespace ExamService.Models.AccountViewModels
 {
     public class LoginViewModel
     {
-        [Required]
         //[RegularExpression("^[0-9]*$", ErrorMessage = "text message")]
+        [Required(ErrorMessage ="Kullanıcı Adı boş geçemezsiniz.")]
+        [Display(Name = "Kullanıcı Adı")]
         public string UserName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Kullanıcı Adı boş geçemezsiniz.")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Beni Hatırla?")]
         public bool RememberMe { get; set; }
     }
 }
