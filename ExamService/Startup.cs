@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using ExamService.Data;
 using MySQL.Data.EntityFrameworkCore.Extensions;
 using ExamService.Data.Tables;
+using ExamService.Services;
 
 namespace ExamService
 {
@@ -50,7 +51,10 @@ namespace ExamService
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
-            
+
+            // Add application services.
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

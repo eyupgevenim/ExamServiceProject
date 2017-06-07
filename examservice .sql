@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `exams` (
   `CreatedDate` datetime NOT NULL,
   `LessonId` int(11) NOT NULL,
   `Name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `Questions` text,
+  `Questions` text CHARACTER SET utf8 COLLATE utf8_bin,
   `Title` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

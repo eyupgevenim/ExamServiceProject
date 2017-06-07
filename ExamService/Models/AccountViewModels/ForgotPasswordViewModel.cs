@@ -8,8 +8,8 @@ namespace ExamService.Models.AccountViewModels
 {
     public class ForgotPasswordViewModel
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Boş geçemezsiniz !")]
+        [EmailAddress(ErrorMessage = "Doğru email'inizi girin.")]
         public string Email { get; set; }
     }
 }

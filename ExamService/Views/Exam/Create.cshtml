@@ -14,6 +14,11 @@
         }).ToList()
     };
 
+    var month = DateTime.Now.Month;
+    var period = (month >= 9 || month <= 2) ? "Güz Dönemi" : "Bahar Dönemi";
+    var year = (month >= 9) ? (DateTime.Now.Year + "-" + (DateTime.Now.Year + 1)) 
+                            : ((DateTime.Now.Year - 1) + "-" + DateTime.Now.Year);
+
 }
 
 
@@ -60,7 +65,7 @@
                             @foreach (var item in Model)
                             {
                                 editor++;
-                                answers = "";
+                                answers = "\n";
                                 <div class="col-md-12">
                                     <span class="pull-right">
                                         <button class="btn btn-primary" id="btnPrintEditor_@editor" onclick="print(this.id);">
@@ -71,9 +76,11 @@
                                 <div class="col-md-12">
                                     <textarea cols="80" id="editor_@editor" name="editor_@editor" rows="10">
                                         <div>
-                                            <div style='background:#eeeeee; border:1px solid #dddddd; padding:5px 10px'>
+                                            <div id="examTitle_@editor" style='background:#eeeeee; border:1px solid #dddddd; padding:5px 10px'>
                                                 <p style='margin-left:20px; text-align:center'>
-                                                    <span style='font-size:24px'>NKÜ ÇMF Dersin Adı [Final|Vize|Bütünleme] Sınavı</span>
+                                                    <span style='font-size:24px'>
+                                                        NKÜ ÇMF @year Akademik Yılı @period ... Bölümün @ViewData["lessonName"] Dersin [Final|Vize|Bütünleme] @editor. Grup Sınavı
+                                                    </span>
                                                 </p>
                                             </div>
                                             <br>
@@ -81,66 +88,67 @@
                                                  -webkit-column-count: 2;
                                                  -moz-column-count: 2;
                                                  column-count: 2;
-
                                                  -webkit-column-gap: 50%;
                                                  -moz-column-gap: 50%;
                                                  column-gap: 50%;
                                                  /*
-                                                 -webkit-column-rule-style: solid;
-                                                 -moz-column-rule-style: solid;
-                                                 column-rule-style: solid;
-                                                 */
-                                                 -webkit-column-rule: 1px outset #000000; /* Chrome, Safari, Opera */
-                                                 -moz-column-rule: 1px outset #000000; /* Firefox */
-                                                 column-rule: 1px outset #000000;
-                                                 ">
+                                            -webkit-column-rule-style: solid;
+                                            -moz-column-rule-style: solid;
+                                            column-rule-style: solid;
+                                            */
+                                            -webkit-column-rule: 1px outset #000000; /* Chrome, Safari, Opera */
+                                            -moz-column-rule: 1px outset #000000; /* Firefox */
+                                            column-rule: 1px outset #000000;
+                                            ">
 
-                                                @{ int count = 0;}
-                                                @foreach (var test in item.Test)
-                                                {
-                                                    count++;
-                                                    answers += count + ". " + test.Answer;
-                                                    answers += (item.Test.Count() == count) ? "\n" : ", ";
-
-                                                    <div>
-                                                        <span id="@test.Id" class="queston_editor_@editor" style='margin-left:20px;'> <strong> @count. @test.Question</strong> </span><br />
-                                                        <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp;  @(test.DescriptionJ.A == null ? "" : "A)") @test.DescriptionJ.A </span><br />
-                                                        <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp; @(test.DescriptionJ.B == null ? "" : "B)") @test.DescriptionJ.B </span><br />
-                                                        @if (test.DescriptionJ.C != null)
-                                                            {
-                                                            <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp; C) @test.DescriptionJ.C </span><br />
-                                                            }
-                                                        @if (test.DescriptionJ.D != null)
-                                                            {
-                                                            <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp; D) @test.DescriptionJ.D </span><br />
-                                                            }
-                                                        @if (test.DescriptionJ.E != null)
-                                                            {
-                                                            <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp; E) @test.DescriptionJ.E </span><br />
-                                                            }
-                                                    </div>
-                                                    <br />
-                                                }
-                                            </div>
-
-                                            @foreach (var classic in item.Classic)
+                                            @{ int count = 0;}
+                                            @foreach (var test in item.Test)
                                             {
                                                 count++;
-                                                answers += count + ". " + classic.Answer + "\n";
+                                                answers += count + ". " + test.Answer;
+                                                answers += (item.Test.Count() == count) ? "\n" : ", ";
+
                                                 <div>
-                                                    <br />
-                                                    <span id="@classic.Id" class="queston_editor_@editor" style='margin-left:20px;'> <strong> @count. @classic.Question</strong> </span>
-                                                    @if (classic.Description != null)
+                                                    <span id="@test.Id" class="queston_editor_@editor" style='margin-left:20px;'> <strong> @count. @test.Question</strong> </span><br />
+                                                    <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp;  @(test.DescriptionJ.A == null ? "" : "A)") @test.DescriptionJ.A </span><br />
+                                                    <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp; @(test.DescriptionJ.B == null ? "" : "B)") @test.DescriptionJ.B </span><br />
+                                                    @if (test.DescriptionJ.C != null)
                                                     {
-                                                        <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp; @classic.Description </span>
+                                                        <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp; C) @test.DescriptionJ.C </span><br />
+                                                    }
+                                                    @if (test.DescriptionJ.D != null)
+                                                    {
+                                                        <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp; D) @test.DescriptionJ.D </span><br />
+                                                    }
+                                                    @if (test.DescriptionJ.E != null)
+                                                    {
+                                                        <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp; E) @test.DescriptionJ.E </span><br />
                                                     }
                                                 </div>
+                                                <br />
                                             }
                                         </div>
+
+                                        @foreach (var classic in item.Classic)
+                                        {
+                                            count++;
+                                            answers += count + ". " + classic.Answer + "\n";
+                                            <div>
+                                                <br />
+                                                <span id="@classic.Id" class="queston_editor_@editor" style='margin-left:20px;'> <strong> @count. @classic.Question</strong> </span>
+                                                @if (classic.Description != null)
+                                                {
+                                                    <span style='margin-left:40px;'> &nbsp;&nbsp;&nbsp; @classic.Description </span>
+                                                }
+                                            </div>
+                                        }
+</div>
+                                </textarea>
+                                <div class="col-md-12 m0 p0">
+                                    <textarea id="answer_editor_@editor" rows="5"
+                                              style="width:100%;max-width:100%;min-width:100%;">
+                                        NKÜ ÇMF @year Akademik Yılı @period ... Bölümün @ViewData["lessonName"] Dersin [Final|Vize|Bütünleme] @editor. Grup Cevap Anahtarı @(answers)
                                     </textarea>
-                                    <div class="col-md-12 m0 p0">
-                                        <textarea id="answer_editor_@editor" rows="2"
-                                                  style="width:100%;max-width:100%;min-width:100%;">@(answers)</textarea>
                                     </div>
                                     <div class="col-md-1 m0 p0" style="width:0">
                                         <span class="pull-right">
@@ -152,7 +160,7 @@
                                     <br />
                                     <br />
                                 </div>
-                            }
+                                                }
                         </div>
                     </div>
 
@@ -160,120 +168,135 @@
 
             </div>
         </div><!-- /.col -->
-    </div><!-- ./row -->
-</section><!-- /.content -->
-
-<!-- Exam name modal -->
-<div id="examNameModel" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Sınav Kayıt İsmi</h4>
-            </div>
-            <form class="form-horizontal" onsubmit="return false;">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="col-md-3 control-label" for="textinput">Kayıt İsmi: </label>
-                                <div class="col-md-6">
-                                    <input type="text" name="examName" id="examName" class="form-control" required />
+        </div><!-- ./row -->
+    </section><!-- /.content -->
+    <!-- Exam name modal -->
+    <div id="examNameModel" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Sınav Kayıt İsmi</h4>
+                </div>
+                <form class="form-horizontal" onsubmit="return false;">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label" for="textinput">Kayıt İsmi: </label>
+                                    <div class="col-md-6">
+                                        <input type="text" name="examName" id="examName" class="form-control" required />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="form-group">
-                        <div class="col-md-9">
-                            <button type="submit" class="btn btn-primary  pull-right" style="margin-left:10px;" onclick="saveExamGroups();">Kaydet</button>
-                            <button type="button" class="btn btn-danger  pull-right" data-dismiss="modal">İptal</button>
+                    <div class="modal-footer">
+                        <div class="form-group">
+                            <div class="col-md-9">
+                                <button type="submit" class="btn btn-primary  pull-right" style="margin-left:10px;" onclick="saveExamGroups();">Kaydet</button>
+                                <button type="button" class="btn btn-danger  pull-right" data-dismiss="modal">İptal</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </form>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 
 
-@section scripts{
+    @section scripts{
 
-    <environment names="Development">
-        <script src="~/lib/ckeditor/ckeditor.js"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="//cdn.ckeditor.com/4.6.1/full/ckeditor.js"
-                asp-fallback-src="~/lib/ckeditor/ckeditor.js"
-                asp-fallback-test="window.CKeditor">
-        </script>
-    </environment>
+        <environment names="Development">
+            <script src="~/lib/ckeditor/ckeditor.js"></script>
+        </environment>
+        <environment names="Staging,Production">
+            <script src="//cdn.ckeditor.com/4.6.1/full/ckeditor.js"
+                    asp-fallback-src="~/lib/ckeditor/ckeditor.js"
+                    asp-fallback-test="window.CKeditor">
+            </script>
+        </environment>
 
-    <script type="text/javascript">
+        <script type="text/javascript">
 
-        // set editors
-        for (var i = 0; i < @editor; i++){
-            CKEDITOR.replace('editor_'+(i+1), {
-                height: '1212'
-            });
-        }
-
-
-        //print editor
-        function print(id) {
-            var editorNum = id.split("_")[1];
-            var editor = CKEDITOR.instances["editor_"+editorNum];
-            editor.execCommand("print");
-            //printAnswer($("#answer_editor_"+editorNum).val());
-        }
-
-        //print answer
-        function printAnswer(id){
-            var editorNum = id.split("_")[2];
-            var text = $("#answer_editor_"+editorNum).val();
-            var w=window.open();
-            w.document.write(text);
-            w.print();
-            w.close();
-        }
-
-        // jQuery initialize function
-        $(function () {
-
-            // route /Question/Index page
-            window.routeIndex = function () {
-                window.location.href = '@Url.Content("~/Question/Index")';
-            }//window.routeIndex = function ()
-
-            // save exam groups
-            window.saveExamGroups = function () {
-                var examName = $("#examName").val();
-                if(examName.trim() == "")return;
-
-                var Exam = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Exam));
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("SaveExamGroups", "Exam")",
-                    dataType: "json",
-                    async: true,
-                    data: {
-                        lessonGuid:"@ViewData["lessonGuid"]",
-                        exam:JSON.stringify(Exam),
-                        name:examName
-                    },
-                    success: function (response){
-                        if(!response.error){
-                            $('#examNameModel').modal('toggle');
-                        }
-                        alert(response.message);
-                    },
-                    error: function (er) { console.log(er); }
+            // set editors
+            for (var i = 0; i < @editor; i++){
+                CKEDITOR.replace('editor_'+(i+1), {
+                    height: '1212'
                 });
-            }//window.saveExamGroups = function ()
+            }
 
 
-        });//$(function ())
-    </script>
-}
+            //print editor
+            function print(id) {
+                var editorNum = id.split("_")[1];
+                var editor = CKEDITOR.instances["editor_"+editorNum];
+                editor.execCommand("print");
+                //printAnswer($("#answer_editor_"+editorNum).val());
+            }
+
+            //print answer
+            function printAnswer(id){
+                var editorNum = id.split("_")[2];
+                var text = $("#answer_editor_"+editorNum).val();
+                var w=window.open();
+                w.document.write(text);
+                w.print();
+                w.close();
+            }
+
+            // jQuery initialize function
+            $(function () {
+
+
+                // route /Question/Index page
+                window.routeIndex = function () {
+                    window.location.href = '@Url.Content("~/Question/Index")';
+                }//window.routeIndex = function ()
+
+                // save exam groups
+                window.saveExamGroups = function () {
+                    var examName = $("#examName").val();
+                    if(examName.trim() == "")return;
+
+                    var title = '';
+                    title = '<div style="background:#eeeeee; border:1px solid #dddddd; padding:5px 10px" >';
+                    title += '<p style="margin-left:20px; text-align:center"><span style="font-size:24px">';
+                    title += 'NKÜ ÇMF @year Akademik Yılı @period ... Bölümün @ViewData["lessonName"] Dersin [Final|Vize|Bütünleme] @editor. Grup Sınavı';
+                    title += '</span></p> </div> <br>';
+
+
+                    var Exam = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Exam));
+
+                    for (var i = 0; i < @editor; i++) {
+                        var ed = CKEDITOR.instances["editor_"+(i+1)].getData();
+                        Exam.QuestionGroups[i].title = $("#examTitle_"+(i+1),ed).length == 1
+                                                       ? $("#examTitle_"+(i+1),ed)[0].innerHTML.trim() : title;
+                    }
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("SaveExamGroups", "Exam")",
+                        dataType: "json",
+                        async: true,
+                        data: {
+                            lessonGuid:"@ViewData["lessonGuid"]",
+                            exam:JSON.stringify(Exam),
+                            name:examName
+                        },
+                        success: function (response){
+                            if(!response.error){
+                                $('#examNameModel').modal('toggle');
+                            }
+                            alert(response.message);
+                        },
+                        error: function (er) { console.log(er); }
+                    });
+                }//window.saveExamGroups = function ()
+
+
+            });//$(function ())
+        </script>
+    }

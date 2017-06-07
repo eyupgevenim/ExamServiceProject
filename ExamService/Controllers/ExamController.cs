@@ -142,6 +142,7 @@ namespace ExamService.Controllers
                                  .ToList();
 
             ViewData["lessonGuid"] = GetLesson(model.eLessonGuid).Guid;
+            ViewData["lessonName"] = GetLesson(model.eLessonGuid).Name;
             return View(SetExamPages(test, classic, model.eGroup, model.eGroupFormat, model.eTest, model.eClassic));
         }
 
@@ -250,7 +251,7 @@ namespace ExamService.Controllers
                                     Answer = q.Answer,
                                     Subject = q.Subcject.Name
                                 }).Count();
-            count = (count % 3) == 0 ? count / 3 : ((int)(count / 3) + 1);
+            count = (count % 20) == 0 ? count / 20 : ((int)(count / 20) + 1);
             if (active > count) active = 1;
 
             var questions = _context
@@ -270,10 +271,7 @@ namespace ExamService.Controllers
                                             Description = q.ExamFormat == "Klasik" ? q.Description : "",
                                             Answer = q.Answer,
                                             Subject = q.Subcject.Name
-                                        })
-                                        .Skip((active - 1) * 3)
-                                        .Take(3)
-                                        .ToList()
+                                        }).Skip((active - 1) * 20).Take(20).ToList()
                                 ).FirstOrDefault();
             
 
@@ -467,7 +465,7 @@ namespace ExamService.Controllers
                                 .OrderBy(o => classicIds.IndexOf(o.Id))
                                 .ToList();
 
-            return Json(new { test, classic, name = qIds.name });
+            return Json(new { test, classic, name = qIds.name , qIds.exam.Title });
         }
 
         #region Helpers

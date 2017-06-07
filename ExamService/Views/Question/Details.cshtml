@@ -5,7 +5,7 @@
     var lesson = new { Guid = Model.FirstOrDefault().LessonGuid, Name = Model.FirstOrDefault().LessonName };
     int page = (int)ViewData["page"];
     int active = (int)ViewData["active"];
-    var x = (page - 1) * 20;
+    var x = (active - 1) * 20;
 
 }
 

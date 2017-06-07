@@ -14,6 +14,7 @@ namespace ExamService.Models.ExamViewModels
 
     public class QuestionGroup
     {
+        public string Title { get; set; }
         public List<TestGroup> TestGroups { get; set; }
         public List<ClassicGroup> ClassicGroups { get; set; }
     }
