@@ -36,7 +36,8 @@ namespace ExamService.Models.QuestionViewModels
                 new SelectListItem { Value = "A", Text="A" },
                 new SelectListItem { Value = "B", Text="B" },
                 new SelectListItem { Value = "C", Text="C" },
-                new SelectListItem { Value = "D", Text="D" }
+                new SelectListItem { Value = "D", Text="D" },
+                new SelectListItem { Value = "E", Text="E" }
             };
         }
         

@@ -68,7 +68,8 @@
                                     <div class="col-md-4 col-md-offset-2">
                                         <a asp-controller="Question" asp-action="Details" asp-route-id="@Model.qLessonGuid"
                                            class="btn btn-primary pull-right" style="margin-left:10px">İptal Et</a>
-                                        <form asp-controller="Question" asp-action="Delete" method="post">
+                                        
+                                        <form asp-controller="Question" asp-action="Delete" asp-route-id="" method="post">
                                             <input type="hidden" name="confirm" value="true" />
                                             <input asp-for="Id" type="hidden" />
                                             <button type="submit" class="btn btn-danger pull-right">Sil</button>
@@ -85,3 +86,24 @@
 </section>
 
 
+
+@*@section scripts{
+    <script type="text/javascript">
+        // jQuery initialize function
+        $(function () {
+
+            //when submit form set confirm input
+            window.submitForm = function ($this) {
+                $('<input />')
+                    .attr('type', 'hidden')
+                    .attr("id", "confirm")
+                    .attr('name', "confirm")
+                    .attr('value', true)
+                    .appendTo($this);
+                return true;
+            }//window.submitForm = function ()
+
+        });//$(function ())
+    </script>
+
+}*@

@@ -79,7 +79,7 @@
                                             <div id="examTitle_@editor" style='background:#eeeeee; border:1px solid #dddddd; padding:5px 10px'>
                                                 <p style='margin-left:20px; text-align:center'>
                                                     <span style='font-size:24px'>
-                                                        NKÜ ÇMF @year Akademik Yılı @period ... Bölümün @ViewData["lessonName"] Dersin [Final|Vize|Bütünleme] @editor. Grup Sınavı
+                                                        [NKÜ ÇMF] @year Akademik Yılı @period [Bilgisayar Müh.] Bölümün @ViewData["lessonName"] Dersin @ViewData["examType"] @editor. Grup Sınavı
                                                     </span>
                                                 </p>
                                             </div>
@@ -147,7 +147,7 @@
                                 <div class="col-md-12 m0 p0">
                                     <textarea id="answer_editor_@editor" rows="5"
                                               style="width:100%;max-width:100%;min-width:100%;">
-                                        NKÜ ÇMF @year Akademik Yılı @period ... Bölümün @ViewData["lessonName"] Dersin [Final|Vize|Bütünleme] @editor. Grup Cevap Anahtarı @(answers)
+                                        [NKÜ ÇMF] @year Akademik Yılı @period [Bilgisayar Müh.] Bölümün @ViewData["lessonName"] Dersin @ViewData["examType"] @editor. Grup Cevap Anahtarı @(answers)
                                     </textarea>
                                     </div>
                                     <div class="col-md-1 m0 p0" style="width:0">
@@ -261,10 +261,9 @@
                     if(examName.trim() == "")return;
 
                     var title = '';
-                    title = '<div style="background:#eeeeee; border:1px solid #dddddd; padding:5px 10px" >';
-                    title += '<p style="margin-left:20px; text-align:center"><span style="font-size:24px">';
-                    title += 'NKÜ ÇMF @year Akademik Yılı @period ... Bölümün @ViewData["lessonName"] Dersin [Final|Vize|Bütünleme] @editor. Grup Sınavı';
-                    title += '</span></p> </div> <br>';
+                    title = '<p style="margin-left:20px; text-align:center"><span style="font-size:24px">';
+                    title += '[NKÜ ÇMF] @year Akademik Yılı @period [Bilgisayar Müh.] Bölümün @ViewData["lessonName"] Dersin @ViewData["examType"] @editor. Grup Sınavı';
+                    title += '</span></p>';
 
 
                     var Exam = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Exam));

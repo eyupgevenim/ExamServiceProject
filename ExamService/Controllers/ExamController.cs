@@ -60,12 +60,13 @@ namespace ExamService.Controllers
             var keySubjectIds =Newtonsoft.Json.JsonConvert
                         .DeserializeObject<int[]>(model.eSubjectItems.ToString()).ToList();
 
+            string examType = "Vize";
             List<string> keyExamType = new List<string>();
-            if (model.eVisa == "on") keyExamType.Add("Vize");
-            if (model.eFinal == "on") keyExamType.Add("Final");
-            if (model.eCompletion == "on") keyExamType.Add("Bütünleme");
-            if (model.eExcuse == "on") keyExamType.Add("Mazeret");
-            if (model.eSingleLesson == "on") keyExamType.Add("Tek Ders");
+            if (model.eVisa == "on") { keyExamType.Add("Vize"); examType = "Vize"; }
+            if (model.eFinal == "on") { keyExamType.Add("Final"); examType = "Final"; }
+            if (model.eCompletion == "on") { keyExamType.Add("Bütünleme"); examType = "Bütünleme"; }
+            if (model.eExcuse == "on") { keyExamType.Add("Mazeret"); examType = "Mazeret"; }
+            if (model.eSingleLesson == "on") { keyExamType.Add("Tek Ders"); examType = "Tek Ders"; }
 
             var test = (keySubjectIds.Count() == 0)
                 ? _context.QuestionPools
@@ -143,6 +144,7 @@ namespace ExamService.Controllers
 
             ViewData["lessonGuid"] = GetLesson(model.eLessonGuid).Guid;
             ViewData["lessonName"] = GetLesson(model.eLessonGuid).Name;
+            ViewData["examType"] = examType;
             return View(SetExamPages(test, classic, model.eGroup, model.eGroupFormat, model.eTest, model.eClassic));
         }
 
@@ -211,6 +213,8 @@ namespace ExamService.Controllers
                                     }).ToList();
 
             ViewData["lessonGuid"] = GetLesson(lessonGuid).Guid;
+            ViewData["lessonName"] = GetLesson(lessonGuid).Name;
+            ViewData["examType"] = "[Vize | Final | Bütünleme]";
 
             return View("Create", new List<ExamViewModel>
             {

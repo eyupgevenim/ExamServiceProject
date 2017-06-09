@@ -189,13 +189,12 @@
                 var data = "", title = "", column = "",
                     questionTest = "", questionClassic = "",
                     count = 0, answer = "", answerRow = "", textarea = "";
-                data = '<div>';
-                //title = '<div >';
-                //title += '<div style="background:#eeeeee; border:1px solid #cccccc; padding:5px 10px" >';
-                //title += '<p style="margin-left:20px; text-align:center"><span style="font-size:24px">';
-                //title += '..... Sınav Başlığı ...</span></p> </div> <br>';
-                //data = title;
-                data += response.title;
+
+                data = '<div >';
+                title = '<div style="background:#eeeeee; border:1px solid #cccccc; padding:5px 10px" >';
+                title += response.title;;
+                title += '</div> <br>';
+                data += title;
 
                 column = '<div id="multiColumn" style="-webkit-column-count: 2;-moz-column-count: 2;column-count: 2;';
                 column += '-webkit-column-gap: 50%;-moz-column-gap: 50%;column-gap: 50%;';
@@ -240,7 +239,7 @@
                 editor.insertHtml(data);
                 editor.setData(data);
 
-                textarea = '<textarea id="answer_editor" row="2" style="width:100%;max-width:100%;min-width:100%;">';
+                textarea = '<textarea id="answer_editor" row="5" style="width:100%;max-width:100%;min-width:100%;">';
                 textarea += answer;
                 textarea += '</textarea>';
 

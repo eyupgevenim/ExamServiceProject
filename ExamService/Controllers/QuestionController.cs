@@ -54,7 +54,7 @@ namespace ExamService.Controllers
 
             var questionsList = _context.Lessons
                                     .Where(x => x.Guid == id && x.UserId == GetUser.Id && x.Delete == false)
-                                    .Select(l => l.QuestionPools.Select(q => new ListQuestionViewModel
+                                    .Select(l => l.QuestionPools.Where(y=>y.Delete == false).Select(q => new ListQuestionViewModel
                                     {
                                         Id = q.Id,
                                         ExamFormat = q.ExamFormat,
@@ -150,6 +150,7 @@ namespace ExamService.Controllers
                                                                 Newtonsoft.Json.JsonConvert.
                                                                 DeserializeObject<Option>(q.Description) : null,
                                             Description = q.ExamFormat == "Klasik" ? q.Description : "",
+                                            Answer = q.Answer,
                                             qExamType = q.ExamType,
                                             qExamFormat = q.ExamFormat,
                                             qLessonGuid = q.Lesson.Guid
@@ -195,6 +196,7 @@ namespace ExamService.Controllers
                                             .Where(x => x.Id == model.Id && x.Lesson.UserId == GetUser.Id)
                                             .SingleOrDefault();
                 q.Question = model.Question;
+                q.Answer = model.Answer;
 
                 if(q.ExamFormat == "Klasik")
                 {
@@ -226,7 +228,9 @@ namespace ExamService.Controllers
         public ActionResult Delete(string id)
         {
             var question = _context.QuestionPools
-                                        .Where(x => x.Id == id && x.Lesson.UserId == GetUser.Id)
+                                        .Where(x => x.Id == id 
+                                        && x.Delete == false
+                                        && x.Lesson.UserId == GetUser.Id)
                                         .Select(q => new QuestionViewModel
                                         {
                                             Id = q.Id,
@@ -251,19 +255,31 @@ namespace ExamService.Controllers
 
         // POST: Question/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(string id, bool confirm)
+        public ActionResult Delete(string id, bool confirm = false)
         {
             try
             {
                 var question = _context.QuestionPools.Where(x => x.Id == id && x.Lesson.UserId == GetUser.Id).FirstOrDefault();
                 if(confirm && question != null)
                 {
-                    question.Delete = true;
-                    //_context.Remove(question);
+
+                    var countQuestions = _context.Exams.ToList()
+                        .Where(x => x.Questions.Contains(id)).Count();
+                    if (countQuestions > 0)
+                    {
+                        question.Delete = true;
+
+                    }
+                    else
+                    {
+                        _context.Remove(question);
+                    }
+                    
+                    //question.Delete = true;
                     int result = _context.SaveChanges();
                     if (result > 0) return Redirect("~/Question/Details/" + question.Lesson.Guid);
                     else return Redirect("~/Question/Delete/" + id);
+
                 }
                 else
                 {

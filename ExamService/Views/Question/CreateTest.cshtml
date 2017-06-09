@@ -186,7 +186,29 @@
                                                     <div class="input-group" id="inputGroup_D">
                                                         <span class="input-group-addon" id="add-D-addon">  D  )</span>
                                                         <input asp-for="DescriptionJ.D" class="form-control" aria-describedby="add-D-addon" required />
-                                                        <span class="input-group-addon remove-span" id="remove-span_D">
+                                                        @*<span class="input-group-addon remove-span" id="remove-span_D">
+                                                            <a href="#" onclick="return false;" class="remove">
+                                                                <i class="fa fa-remove" style="color:red"></i>
+                                                            </a>
+                                                        </span>*@
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <span asp-validation-for="DescriptionJ.D" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--new add-->
+                                    <div class="row" id="row_E">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="col-md-8">
+                                                    <div class="input-group" id="inputGroup_E">
+                                                        <span class="input-group-addon" id="add-E-addon">  E  )</span>
+                                                        <input asp-for="DescriptionJ.E" class="form-control" aria-describedby="add-E-addon" required />
+                                                        <span class="input-group-addon remove-span" id="remove-span_E">
                                                             <a href="#" onclick="return false;" class="remove">
                                                                 <i class="fa fa-remove" style="color:red"></i>
                                                             </a>
@@ -194,7 +216,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <span asp-validation-for="DescriptionJ.D" class="text-danger"></span>
+                                                    <span asp-validation-for="DescriptionJ.E" class="text-danger"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -271,7 +293,7 @@
                 var rowOption = '<div class="row" id="row_' + option + '"><div class="col-md-12"><div class="form-group">' +
                                 '<div class="col-md-8"><div class="input-group" id="inputGroup_' + option + '">' +
                                 '<span class="input-group-addon" id="add-' + option + '-addon"> ' + option + '  )</span>' +
-                                '<input asp-for="DescriptionJ.' + option + '" class="form-control" aria-describedby="add-' + option + '-addon" required/>' +
+                                '<input id="DescriptionJ_' + option + '" name="DescriptionJ.' + option + '" class="form-control" aria-describedby="add-' + option + '-addon" required/>' +
                                 '<span class="input-group-addon remove-span" id="remove-span_' + option + '" onclick="return false;">' +
                                 '<a href="#" onclick="return false;" class="remove">' +
                                 '<i class="fa fa-remove" style="color:red"></i></a></span></div></div>' +

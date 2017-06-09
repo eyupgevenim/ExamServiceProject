@@ -42,7 +42,7 @@
                                     
                                 </div>
                             </div>
-                            <form asp-controller="Question" asp-action="Create" method="post" class="form-horizontal">
+                            <form asp-controller="Question" asp-action="Create" method="post" class="form-horizontal" onsubmit="return validationForm();">
 
                                 <input asp-for="qExamFormat" type="hidden" value="Klasik" />
 
@@ -163,7 +163,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <div class="col-md-8">
-                                                <button type="submit" class="btn btn-primary pull-right">Kaydet</button>
+                                                <button type="submit" onsubmit="" class="btn btn-primary pull-right">Kaydet</button>
                                             </div>
                                         </div>
                                     </div>
@@ -252,8 +252,17 @@
 
 
             if ("@error" == "False") {
-                $("#Question").val("");
+                $("#Question,#Answer").val("");
                 editor.setData("");
+            }
+
+            window.validationForm = function () {
+                if ($("#Question").val().trim() == "" || $("#Answer").val().trim() == "") {
+                    alert("Alanları boş geçemezsiniz !");
+                    return false;
+                }
+
+                return true;
             }
 
 
