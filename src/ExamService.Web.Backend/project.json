@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0-*",
+
+  "frameworks": {
+    "netcoreapp1.0": {}
+  },
+  "dependencies": {
+    "Microsoft.AspNetCore.StaticFiles": "1.0.0",
+    "Microsoft.AspNetCore.Mvc": "1.0.0",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0",
+    "Microsoft.Extensions.Logging": "1.0.0",
+    "Microsoft.Extensions.Logging.Console": "1.0.0",
+    "Microsoft.Extensions.Logging.Debug": "1.0.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+    "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0",
+    "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
+    "MySql.Data.EntityFrameworkCore": "7.0.6-IR31",
+    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
+    "Microsoft.EntityFrameworkCore.Tools": {
+      "version": "1.0.0-preview2-final",
+      "type": "build"
+    },
+    "Microsoft.NETCore.App": {
+      "version": "1.0.0",
+      "type": "platform"
+    },
+    "Microsoft.EntityFrameworkCore.Design": "1.0.0-preview2-final",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
+    "ExamService.Contracts": "1.0.0-*",
+    "ExamService.Entities": "1.0.0-*",
+    "ExamService.DAL": "1.0.0-*"
+  },
+
+  "tools": {
+    "Microsoft.EntityFrameworkCore.Tools": {
+      "version": "1.0.0-preview2-final"
+    }
+
+  }
+}
