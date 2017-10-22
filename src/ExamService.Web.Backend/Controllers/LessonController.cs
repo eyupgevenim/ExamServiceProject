@@ -22,7 +22,7 @@ namespace ExamService.Web.Backend.Controllers
 
         // GET: Lesson
         [HttpGet]
-        public ActionResult Index()
+        public ViewResult Index()
         {
             var lessons = _context.Lessons.GetAll().Where(x=>x.UserId == GetUser.Id 
             && x.Delete == false).Select(x => new LessonViewModel
